@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?> 
+<svg id="r9_embed_svg" onload="initial_and_start(evt)" onunload="unload_it(evt)" version="1.1"  width="100%" height="100%" viewBox="0 0 770 580" preserveAspectRatio="none" 
+ xmlns="http://www.w3.org/2000/svg" 
+ xmlns:xlink="http://www.w3.org/1999/xlink" 
+ xml:space="preserve"> 
+  <defs> 
+ <marker id="markerCircle" markerWidth="8" markerHeight="8" refx="5" refy="5" orient="auto" markerUnits="strokeWidth">
+   <circle cx="5" cy="5" r="3" style="stroke: none; fill:#000000;"/>
+ </marker>
+     <marker id="markerArrowEnd"  viewBox="0 0 10 10" refX="0" refY="5"  markerUnits="strokeWidth" 
+      markerWidth="4" markerHeight="3"  orient="auto"> 
+      <path d="M 0 0 L 10 5 L 0 10 z" style="fill: #000000;"/> 
+    </marker> 
+    <marker id="markerArrowStart"   viewBox="0 0 10 10" refX="10" refY="5"  markerUnits="strokeWidth" 
+      markerWidth="4" markerHeight="3"      orient="auto"> 
+      <path d="M 0 5 L 10 10 L 10 0 z" style="fill: #000000;"/> 
+    </marker> 
+ </defs>
+ <g id="k_svg_1_copy_svg_2_1" pointer-events="visible">   <path fill="#FF0000" stroke="#000000" stroke-width="5" style="pointer-events:inherit" d="M127.77775,162.53423Q145.935,175.00417 164.04982,162.53423M131.71324,137.90608C131.71324,135.97897 133.27538,134.41632 135.20248,134.41632C137.13008,134.41632 138.69225,135.97897 138.69225,137.90608C138.69225,139.83319 137.13008,141.39532 135.20248,141.39532C133.27538,141.39532 131.71324,139.83319 131.71324,137.90608M153.17827,137.90608C153.17827,135.97897 154.7404,134.41632 156.66751,134.41632C158.59509,134.41632 160.15723,135.97897 160.15723,137.90608C160.15723,139.83319 158.59509,141.39532 156.66751,141.39532C154.7404,141.39532 153.17827,139.83319 153.17827,137.90608M112.435,147.925L112.435,147.925C112.435,129.42374 127.43373,114.425 145.935,114.425C164.43674,114.425 179.435,129.42374 179.435,147.925C179.435,166.42627 164.43674,181.425 145.935,181.425C127.43373,181.425 112.435,166.42627 112.435,147.925zM112.435,147.925L112.435,147.925C112.435,129.42374 127.43373,114.425 145.935,114.425C164.43674,114.425 179.435,129.42374 179.435,147.925C179.435,166.42627 164.43674,181.425 145.935,181.425C127.43373,181.425 112.435,166.42627 112.435,147.925z" fill-opacity="1" stroke-opacity="1" id="k_svg_1_copy_svg_2">  <animate id="_a_1" attributeName="d" attributeType="XML" to="M311.77774,288.53424Q329.935,301.00415 348.04984,288.53424M315.71323,263.9061C315.71323,261.97897 317.27539,260.41632 319.20248,260.41632C321.13007,260.41632 322.69226,261.97897 322.69226,263.9061C322.69226,265.83319 321.13007,267.39532 319.20248,267.39532C317.27539,267.39532 315.71323,265.83319 315.71323,263.9061M337.17828,263.9061C337.17828,261.97897 338.74042,260.41632 340.66751,260.41632C342.59509,260.41632 344.15723,261.97897 344.15723,263.9061C344.15723,265.83319 342.59509,267.39532 340.66751,267.39532C338.74042,267.39532 337.17828,265.83319 337.17828,263.9061M296.435,273.92499L296.435,273.92499C296.435,255.42374 311.43372,240.425 329.935,240.425C348.43674,240.425 363.435,255.42374 363.435,273.92499C363.435,292.42627 348.43674,307.42502 329.935,307.42502C311.43372,307.42502 296.435,292.42627 296.435,273.92499zM296.435,273.92499L296.435,273.92499C296.435,255.42374 311.43372,240.425 329.935,240.425C348.43674,240.425 363.435,255.42374 363.435,273.92499C363.435,292.42627 348.43674,307.42502 329.935,307.42502C311.43372,307.42502 296.435,292.42627 296.435,273.92499z" begin="indefinite" dur="1s" fill="freeze"></animate>   </path>   </g> <g id="play_pause_g"  pointer-events="visible">
+   <circle id="play_pause_button" r="23.60085" cy="530" cx="57" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="1" stroke="#000000" fill="#FF0000"/>
+   <text id="play_pause_text" x="40"  y="535" >Pause</text>
+ </g>
+ <g id="reload_g"   pointer-events="visible">
+   <circle id="reload_button" r="23.60085" cy="530" cx="115" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="1" stroke="#000000" fill="#FF0000"/>
+   <text id="reload_text" x="94"  y="535" >Reload</text>
+ </g>
+<script type="application/ecmascript"> <![CDATA[    var cachedFigures = {};  var reload_text = document.getElementById("reload_text");	   reload_text.addEventListener("mouseup", reloadIt, false);	   reload_text.addEventListener("touchend", reloadIt, false);cachedFigures["k_svg_1_copy_svg_2_1"] =  document.getElementById("k_svg_1_copy_svg_2_1").cloneNode(true) ;	 function resetFigures(){ 	     for( var key in cachedFigures ) { 	      var t = document.getElementById( key );  t.parentNode.replaceChild(cachedFigures[key].cloneNode(true) , t);   	   } 	 }	   function reloadIt(event) {        resetFigures();  initial_and_start(event);	     event.preventDefault();	     return false;	 }]]></script> <g id="message_box" style="visibility:hidden"  pointer-events="visible">
+  <rect id="message_background" x="100" y="100" width="10" height="20" fill="#FCF3F3" stroke="#000000" stroke-width="1" ></rect>
+  <text id="message_body" x="100" y="120" font-family="Verdana" font-size="18" fill="black" > Hello </text>
+ </g>
+  <g id="ex_dialog_box" style="visibility:hidden"  pointer-events="visible" >
+   <rect id="ex_dialog_background" x="100" y="100" width="120" height="100" fill="white" stroke="#000000" stroke-width="1" ></rect>
+   <rect id="ex_dialog_content_bg" x="100" y="100" width="120" height="30" fill="#FCF3F3" stroke="#000000" stroke-width="1" ></rect>
+   <text id="ex_dialog_content" x="100" y="120" font-family="Verdana" font-size="18" fill="black" width="120" text-decoration = "underline" > Hello </text>
+ <circle id="ex_dialog_option_1m" cx="105" cy="145" r="3" fill="red" />
+  <text id="ex_dialog_option_1" x="115" y="150" font-family="Verdana" font-size="18" fill="black" >  </text>
+ <circle id="ex_dialog_option_2m" cx="105" cy="165" r="3" fill="red" />
+   <text id="ex_dialog_option_2" x="115" y="170" font-family="Verdana" font-size="18" fill="black" >  </text>
+ <circle id="ex_dialog_option_3m" cx="105" cy="185" r="3" fill="red" />
+   <text id="ex_dialog_option_3" x="115" y="190" font-family="Verdana" font-size="18" fill="black" >  </text>
+  </g>
+  <script type="application/ecmascript"> 
+   <![CDATA[ 
+ 
+    R9TransitionChainHandler = function(){ 
+    var This = this;
+   this._staytimeoutHandler = null;
+   this._transtimeoutHandler = null;
+   this.chain = new Array(); 
+   this.currentStep = 0;
+   this.isRunning = false;
+   this.nextStep = function(){
+     This.currentStep = This.currentStep +1;
+     if (This.currentStep == This.chain.length) { 
+         This.currentStep = This.chain.length -1; 
+          This.stop();
+      }else {
+          This.processCurrentStep();
+      }
+   };
+   this.processCurrentStep = function(){
+      This.chain[This.currentStep].func.setup();
+      This._staytimeoutHandler = window.setTimeout(function(){ 
+         This.chain[This.currentStep].func.play(); 
+         This._transtimeoutHandler = window.setTimeout(function(){ 
+            if ( This.chain[This.currentStep].staytime == 0 ) onPlayResume(false); 
+            else This.nextStep(); }, This.chain[This.currentStep].transtime);  
+      },This.chain[This.currentStep].staytime);
+   };
+  this.resumeCurrentStep = function(){ 
+     This._staytimeoutHandler = window.setTimeout(function(){ 
+     This._transtimeoutHandler = window.setTimeout(function(){
+         This.nextStep();  }, This.chain[This.currentStep].transtime); 
+     },This.chain[This.currentStep].staytime);
+  };
+  this.revStep = function(){ 
+     This.currentStep = This.currentStep -1;
+     if (This.currentStep <  0) {
+        This.currentStep = 0; This.stop();  
+     }else  {
+        This.processCurrentStepRev(); 
+     }
+  };  
+	     this.processCurrentStepRev = function(){ 
+	 	    This._staytimeoutHandler = window.setTimeout(function(){ 
+	             This.chain[This.currentStep].func.reverse(); 
+	 			    This._transtimeoutHandler = window.setTimeout(function(){ 
+	                     This.revStep(); 
+	                },This.chain[This.currentStep].transtime);  
+	         },This.chain[This.currentStep].staytime);  
+	     }; 
+	     this.reset =function(){ 
+	         if (This.chain.length == 0)  { 
+	             return;
+	         }
+	         This.stop();
+	         This.currentStep = 0; 
+	     };
+	        this.start =function(){
+	         if (This.chain.length == 0)  {
+	             return;
+	         }
+	         if (This.isRunning == true)  {
+	             return;
+	         }
+	         This.isRunning = true; 
+	         This.processCurrentStep();
+	     };
+	     this.resume =function(){
+	         if (This.chain.length == 0)  {
+	             return;
+	         }
+	         if (This.isRunning == true)  {
+	             return;
+	         }
+	         This.isRunning = true; 
+	         This.resumeCurrentStep();
+	     };
+	     this.stop = function(){
+	         This.isRunning = false;
+	         window.clearTimeout(This._staytimeoutHandler);
+	 		window.clearTimeout(This._transtimeoutHandler);
+	     };
+	     this.add = function(_function,   toHereTime, stayHereTime){
+	         This.chain[This.chain.length] = {func : _function, transtime : toHereTime, staytime : stayHereTime};
+	     };
+	     this.distroy = function(){
+	 	     this.stop();
+	          This.chain = [];
+	     };
+	     this.showMessage = function(dnclayer, messageid, message, stagewidth, stageheight, duration){
+	     }; 
+	   } 
+	   <!-- create play/pause button handle -->
+	   function onPlayResume( event ){
+	     var resume = !r9player.isRunning;
+	     resumeOrStop( resume );  
+	     event.preventDefault();
+	     return false;
+	   }
+	   function resumeOrStop( resume ){
+	     var textnode = document.getElementById("play_pause_text");
+	     if ( textnode ) {
+	         textnode.innerHTML = resume ? "Pause" : "Play"; 	         if ( resume ){ 
+	            r9player.resume();
+	         } else {
+	            r9player.stop();
+	        }
+	     }
+	   }
+	   var playbutton = document.getElementById("play_pause_g");
+	   playbutton.addEventListener("mouseup", onPlayResume, false);
+	   playbutton.addEventListener("touchend", onPlayResume, false);
+	   var message_body = document.getElementById("message_body");
+	   message_body.addEventListener("mouseup", dismissMessageDialog, false);
+	   message_body.addEventListener("touchend", dismissMessageDialog, false);
+	   function reportEvent(eventName) {  
+       if(typeof __report_event ==="function" ) { 
+          try{ __report_event(eventName); }catch(err){    try{ console.log(err); }catch(err2){ }   }  
+	    }
+	     event.preventDefault();
+	     return false;
+	 }
+	 function dismissMessageDialog(event) {  
+     var message_box = document.getElementById("message_box");
+     message_box.setAttribute("style", "visibility:hidden");   
+	  resumeOrStop(true);
+	     if( event )  event.preventDefault();
+	     return false;
+	 }
+	 function dismissOptionDialog() {  
+     var message_box = document.getElementById("ex_dialog_box");
+     message_box.setAttribute("style", "visibility:hidden");   
+	 }
+  <!-- show option dialog --> 
+   function optionDialogHandler(questionid, content, option1, option1f, option2, option2f, option3, option3f ){  
+     if ( !content || content.length == 0 ) return; 
+     var dialog_box = document.getElementById("ex_dialog_box");
+     dialog_box.setAttribute("style", "visibility:shown");   
+     var parent_width = dialog_box.parentNode.getAttribute('width'); var parent_height = dialog_box.parentNode.getAttribute('height');      var ex_dialog_content_bg = document.getElementById("ex_dialog_content_bg"); 
+     var ex_dialog_content = document.getElementById("ex_dialog_content"); 
+     var ex_dialog_option_1 = document.getElementById("ex_dialog_option_1"); 
+     var clone_ex_dialog_option_1 = ex_dialog_option_1.cloneNode(true); ex_dialog_option_1.parentNode.replaceChild(clone_ex_dialog_option_1, ex_dialog_option_1); 
+     var ex_dialog_option_2 = document.getElementById("ex_dialog_option_2"); 
+     var clone_ex_dialog_option_2 = ex_dialog_option_2.cloneNode(true); ex_dialog_option_2.parentNode.replaceChild(clone_ex_dialog_option_2, ex_dialog_option_2); 
+     var ex_dialog_option_3 = document.getElementById("ex_dialog_option_3"); 
+     var clone_ex_dialog_option_3 = ex_dialog_option_3.cloneNode(true); ex_dialog_option_3.parentNode.replaceChild(clone_ex_dialog_option_3, ex_dialog_option_3); 
+     var ex_dialog_background = document.getElementById("ex_dialog_background"); 
+     ex_dialog_content.innerHTML = content ;  clone_ex_dialog_option_1.innerHTML = option1 ; clone_ex_dialog_option_2.innerHTML = option2 ;clone_ex_dialog_option_3.innerHTML = option3 ; 
+     var bbox = ex_dialog_content.getBBox(); var mwidth = bbox["width"]; 
+     var bbox1 = clone_ex_dialog_option_1.getBBox(); var mwidth1 = bbox1["width"];  
+     var bbox2 = clone_ex_dialog_option_2.getBBox(); var mwidth2 = bbox2["width"];  
+     var bbox3 = clone_ex_dialog_option_3.getBBox(); var mwidth3 = bbox3["width"];  
+	  var max_width = mwidth > mwidth1 ? mwidth : mwidth1; max_width = max_width > mwidth2 ? max_width : mwidth2;  max_width = max_width > mwidth3 ? max_width : mwidth3;
+     max_width = max_width +20;  var leftx = (parent_width - max_width ) / 2; var lefty = (parent_height -110 )/2;  
+     ex_dialog_background.setAttribute("width", max_width) ; 
+     ex_dialog_background.setAttribute("x", leftx) ; ex_dialog_background.setAttribute("y", lefty) ;
+     ex_dialog_content_bg.setAttribute("width", max_width) ; 
+     ex_dialog_content_bg.setAttribute("x", leftx) ; ex_dialog_content_bg.setAttribute("y", lefty) ;
+     ex_dialog_content.setAttribute("x", leftx + 15) ; ex_dialog_content.setAttribute("y", lefty + 25) ;
+     clone_ex_dialog_option_1.setAttribute("x", leftx + 15) ; clone_ex_dialog_option_1.setAttribute("y", lefty +50) ;
+     clone_ex_dialog_option_2.setAttribute("x", leftx + 15) ; clone_ex_dialog_option_2.setAttribute("y", lefty +70) ;
+     clone_ex_dialog_option_3.setAttribute("x", leftx + 15) ; clone_ex_dialog_option_3.setAttribute("y", lefty +90) ;
+     var ex_dialog_option_1m = document.getElementById("ex_dialog_option_1m"); 
+     var ex_dialog_option_2m = document.getElementById("ex_dialog_option_2m"); 
+     var ex_dialog_option_3m = document.getElementById("ex_dialog_option_3m"); 
+     ex_dialog_option_1m.setAttribute("cx", leftx + 5) ; ex_dialog_option_1m.setAttribute("cy", lefty +40) ;
+     ex_dialog_option_2m.setAttribute("cx", leftx + 5) ; ex_dialog_option_2m.setAttribute("cy", lefty +60) ;
+     ex_dialog_option_3m.setAttribute("cx", leftx + 5) ; ex_dialog_option_3m.setAttribute("cy", lefty +80) ;
+     var eventid = questionid ? questionid + '_1' : questionid;  var eventhandler1 = function(){ dismissOptionDialog();  return messageEventHandler(eventid, option1f );  };
+	  clone_ex_dialog_option_1.addEventListener("mouseup", eventhandler1, false);
+	  clone_ex_dialog_option_1.addEventListener("touchend", eventhandler1, false);
+       eventid = questionid ? questionid + '_1' : questionid;  var eventhandler2 = function(){ dismissOptionDialog();  return messageEventHandler(eventid, option2f );  };
+	  clone_ex_dialog_option_2.addEventListener("mouseup", eventhandler2, false);
+	  clone_ex_dialog_option_2.addEventListener("touchend", eventhandler2, false);
+       eventid = questionid ? questionid + '_1' : questionid;   var eventhandler3 = function(){  dismissOptionDialog(); return messageEventHandler(eventid, option3f );  };
+	  clone_ex_dialog_option_3.addEventListener("mouseup", eventhandler3, false);
+	  clone_ex_dialog_option_3.addEventListener("touchend", eventhandler3, false);
+  }
+  <!-- show message dialog --> 
+   function messageEventHandler( messageEventName, message, autoDismiss ){  
+     if ( messageEventName )  reportEvent( messageEventName ); 
+     if ( !message || message.length == 0 ) return; 
+     autoDismiss = autoDismiss || false; 
+     var message_box = document.getElementById("message_box");
+     message_box.setAttribute("style", "visibility:shown");   
+     var message_body = document.getElementById("message_body"); 
+     var message_background = document.getElementById("message_background"); 
+     var parent_width = message_box.parentNode.getAttribute('width'); var parent_height = message_box.parentNode.getAttribute('height');      message_body.innerHTML = message ; 
+     var bbox = message_body.getBBox();
+     var leftx = (parent_width - bbox['width'] ) / 2; var lefty = (parent_height -bbox['height'])/2;  
+     message_body.setAttribute('x', leftx); message_body.setAttribute('y', lefty); 
+     bbox = message_body.getBBox();
+     for (var n in bbox) { message_background.setAttribute(n,bbox[n]); }
+     message_background.setAttribute('x', leftx -10); message_background.setAttribute('y', lefty -20 ); 
+     message_background.setAttribute('width', bbox['width'] + 20); message_background.setAttribute('height', bbox['height'] + 20 ); 
+	  r9player.stop();
+    if ( autoDismiss ) { 
+         window.setTimeout(function(){  dismissMessageDialog(); },3000); 
+    } 
+  }
+	   <!-- create each phases -->
+	   var transpages = [];  var global_event_handles ={}; var global_dialog_handles = {}; 
+	 function removeGlobalEventHandlers(handlers, elementId) {  
+       var key; for (key in handlers){ 
+        if( key === elementId ){  ;   
+            var element = document.getElementById( elementId ); 
+            if( element ) element.removeEventListener("mouseup", handlers[key]); 
+            if( element ) element.removeEventListener("touchend",handlers[key]); 
+            delete   handlers[key]; break; 
+	      } 
+	   }
+	 }
+   function initial_phases() {  transpages = []; global_event_handles ={}; global_dialog_handles = {}; 
+       
+transpages.push(          new function(){              var This = this;              this.newobjs = [];              this.deletedobjs = [];              this.tweens = [];              this.created = false;              this.toHereTime = 1000;              this.stayHereTime = 2000;              this.setup = function(){                   if ( This.created ) return;                   This.created = true;                                                  };             this.play = this.resume = function(){                 This.setup();                                         for( var i  =0; i < This.newobjs.length; i++ ){                     This.newobjs[i].setAttribute("display","block");                 }                 for( var i  =0; i < This.tweens.length; i++ ){                     This.tweens[i].beginElement();                 }                 for( var i  =0; i < This.deletedobjs.length; i++ ){                     This.deletedobjs[i].setAttribute("display","none");                 }             };          }     );transpages.push(          new function(){              var This = this;              this.newobjs = [];              this.deletedobjs = [];              this.tweens = [];              this.created = false;              this.toHereTime = 1000;              this.stayHereTime = 2000;              this.setup = function(){                   if ( This.created ) return;                   This.created = true;                                          This.tweens.push( document.getElementById("_a_1") );                                     };             this.play = this.resume = function(){                 This.setup();                                         for( var i  =0; i < This.newobjs.length; i++ ){                     This.newobjs[i].setAttribute("display","block");                 }                 for( var i  =0; i < This.tweens.length; i++ ){                     This.tweens[i].beginElement();                 }                 for( var i  =0; i < This.deletedobjs.length; i++ ){                     This.deletedobjs[i].setAttribute("display","none");                 }             };          }     );	    transpages[0].setup();
+       r9player = new R9TransitionChainHandler(); 
+  	   for(var i = 0; i < transpages.length; i++ ){
+	      r9player.add( transpages[i], transpages[i].toHereTime, transpages[i].stayHereTime );
+	   }
+  }    
+function initial_and_start(evt) {            initial_phases();    r9player.start();                  }           function unload_it(evt){           }  ]]>
+	     </script>
+</svg>

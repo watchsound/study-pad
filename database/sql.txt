@@ -1,0 +1,21 @@
+create table learning_units (
+   unit_id integer primary key autoincrement,
+   uuid varchar(64),
+   folder_name text,
+   from_source integer,
+   name text,
+   description text,
+   concept_name text,
+   difficult_level integer,
+   bookmarked integer
+);
+
+create table study_events ( 
+  event_id integer primary key autoincrement,
+  event_name text,
+  event_day date,
+  event_start datetime,
+  event_end  datetime,
+  event_type integer,
+  learning_unit_id integer
+);

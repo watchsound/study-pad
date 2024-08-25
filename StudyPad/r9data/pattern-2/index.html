@@ -1,0 +1,7676 @@
+ <!DOCTYPE HTML> 
+ <html>
+ <head> <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"> 
+ <style>
+  body {
+   margin: 0px;
+   padding: 0px;
+  }
+ </style>
+ </head>
+ <body>
+ <div id="container" style="position: absolute;
+		    height: 570px;
+		    width: 900px;
+		    margin: -285px 0 0 -450px;
+		    top: 50%;
+		    left: 50%;"></div>  
+   <script src="kinetic-v5.0.2.min.js"></script>
+ <script src="pagebus.js"></script>
+  <script src="r9geom_core.js"></script>
+  <script src="r9geom_main.js"></script>
+   <script src="r9geom.js"></script>
+  <script>
+    var stage = new Kinetic.Stage({
+    container: 'container',
+    width: 900  ,
+    height: 570  
+   });
+   var layer = new Kinetic.Layer();
+   stage.add(layer);
+  var id2figs = {};
+  var transpages = [];  var  r9player ; var contentlay ; 
+  var usetts = 'speechSynthesis' in window; 
+var newimages=[], loadedimages=0;
+  	var r9playbutton = new Kinetic.Label({ 
+        x: 40, 
+        y: stage.getHeight(), 
+     opacity: 0.75 
+   }); 
+   r9playbutton.add(new Kinetic.Tag({ 
+       fill: 'black', 
+       pointerDirection: 'down', 
+      pointerWidth: 10, 
+      pointerHeight: 10, 
+      lineJoin: 'round', 
+     shadowColor: 'black', 
+      shadowBlur: 10, 
+         shadowOffset: {x:5,y:10}, 
+     shadowOpacity: 0.5 
+    }));  
+   r9playbutton.add(new Kinetic.Text({   
+        text: 'Start',  
+       fontFamily: 'Calibri',  
+      fontSize: 18,  
+        padding: 5,  
+        fill: 'white' 
+     }));  
+     r9playbutton.on('tap', function() { 
+     if (! r9player.isRunning  ){  
+         r9playbutton2.moveToTop(); 
+         r9player.start(); 
+  		    layer.draw();  
+  	  }
+      }); 
+      r9playbutton.on('click', function() {  
+          if (! r9player.isRunning  ){   
+         r9playbutton2.moveToTop();  
+         r9player.start();  
+  	    layer.draw();   
+    } 
+    });  
+     r9playbutton.on('mousedown touchstart', function() {  
+           r9playbutton.setOpacity( 0.25  );  
+  		   layer.draw();   
+        });  
+        r9playbutton.on('mouseup touchend', function() {  
+            r9playbutton.setOpacity( 0.75  );  
+   		   layer.draw();  
+       });  
+   	  r9playbutton.on('mouseover', function () {   
+                document.body.style.cursor = 'pointer';   
+          });   
+          r9playbutton.on('mouseout', function () {   
+                   document.body.style.cursor = 'default';   
+          });   
+       layer.add(	r9playbutton );  
+    	 var r9playbutton2 = new Kinetic.Label({  
+        x: 40,  
+           y: stage.getHeight(),  
+        opacity: 0.75  
+       });  
+       r9playbutton2.add(new Kinetic.Tag({  
+       fill: 'black',  
+        pointerDirection: 'down',  
+     pointerWidth: 10,  
+        pointerHeight: 10,  
+         lineJoin: 'round',  
+          shadowColor: 'black',  
+          shadowBlur: 10,  
+             shadowOffset: {x:5,y:10},  
+          shadowOpacity: 0.5  
+          }));   
+        r9playbutton2.add(new Kinetic.Text({    
+           text: 'Stop',   
+          fontFamily: 'Calibri',   
+         fontSize: 18,   
+           padding: 5,   
+          fill: 'white'   
+          }));   
+         r9playbutton2.on('tap', function() {  
+   	      if ( r9player.isRunning  ){ 
+  			   r9playbutton .moveToTop();  
+  	       r9player.stop();   
+  		    layer.draw();   
+  	  }  
+        });  
+   	    r9playbutton2.on('click', function() {  
+             if ( r9player.isRunning  ){ 
+     r9playbutton .moveToTop();  
+        r9player.stop();   
+  	    layer.draw();   
+    }  
+   });  
+     r9playbutton2.on('mousedown touchstart', function() {  
+            r9playbutton2.setOpacity( 0.25  );  
+   		   layer.draw();   
+         });  
+          r9playbutton2.on('mouseup touchend', function() {  
+           r9playbutton2.setOpacity( 0.75  );  
+    		   layer.draw();  
+         });  
+     	  r9playbutton2.on('mouseover', function () {   
+                   document.body.style.cursor = 'pointer';   
+           });   
+          r9playbutton2.on('mouseout', function () {   
+                   document.body.style.cursor = 'default';   
+            });   
+        layer.add(	r9playbutton2 );  
+   var r9restartbutton = new Kinetic.Label({ 
+     x:  stage.getWidth()  -40, 
+    y: stage.getHeight()  , 
+    opacity: 0.75 
+ }); 
+  r9restartbutton.add(new Kinetic.Tag({ 
+   fill: 'black', 
+   pointerDirection: 'down',
+   pointerWidth: 10, 
+    pointerHeight: 10, 
+    lineJoin: 'round', 
+    shadowColor: 'black', 
+    shadowBlur: 10, 
+       shadowOffset: {x:5,y:10}, 
+   shadowOpacity: 0.5 
+  })); 
+  r9restartbutton.add(new Kinetic.Text({   
+       text: 'Reload',  
+      fontFamily: 'Calibri',  
+     fontSize: 18,  
+       padding: 5,  
+      fill: 'white'  
+     }));  
+     r9restartbutton.on('tap', function() { 
+          setupscreen(); 
+    }); 
+ 	    r9restartbutton.on('click', function() { 
+          setupscreen();  
+  }); 
+   r9restartbutton.on('mousedown touchstart', function() { 
+           r9restartbutton.setOpacity( 0.25  ); 
+ 		   layer.draw();  
+       }); 
+      r9restartbutton.on('mouseup touchend', function() { 
+         r9restartbutton.setOpacity( 0.75  ); 
+ 		   layer.draw(); 
+     }); 
+ 	  r9restartbutton.on('mouseover', function () {  
+             document.body.style.cursor = 'pointer';  
+          });  
+     r9restartbutton.on('mouseout', function () {  
+              document.body.style.cursor = 'default';  
+        });  
+    layer.add(	r9restartbutton ); 
+var v_spring_60 = new Image();
+newimages.push( v_spring_60  );
+var v_flash_60 = new Image();
+newimages.push( v_flash_60  );
+var h_flash_60 = new Image();
+newimages.push( h_flash_60  );
+var h_spring_60 = new Image();
+newimages.push( h_spring_60  );
+var spring_215d = new Image();
+newimages.push( spring_215d  );
+ for (var i=0; i<newimages.length; i++){ 
+     newimages[i].onload=function(){
+  imageloadpost() 
+   } 
+  newimages[i].onerror=function(){ 
+    imageloadpost() 
+      }  
+ } 
+  function imageloadpost(){ 
+  loadedimages++; 
+  if (loadedimages==newimages.length)  
+      setupscreen(); 
+  } 
+spring_215d.src = 'spring_215d.jpg'
+h_flash_60.src = 'h_flash_60.jpg'
+v_flash_60.src = 'v_flash_60.jpg'
+v_spring_60.src = 'v_spring_60.jpg'
+h_spring_60.src = 'h_spring_60.jpg'
+ function setupscreen() {
+     if ( r9player ){
+ 	    r9player.distroy();
+ 	}
+ 	   if ( contentlay ) {
+ 	      contentlay.destroy();
+ 		  id2figs = {};
+ 		  transpages = []; 
+ 	  }
+ 	  contentlay = new Kinetic.Layer();  
+   stage.add(contentlay);  layer.moveToTop(); 
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['aa594dba_1bc24_5ab'] = new   Kinetic.Text( { 
+text : normalizeString('Finding Patterns : story two'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 74, 
+fontStyle : 'bold', 
+fontSize : 29.36263736263736, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 168, 
+fillBlue : 0, 
+y : 213, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 140, 
+  }); 
+ contentlay.add(id2figs['aa594dba_1bc24_5ab']);  
+   id2figs['aa8186_1c3ad6ad_ae'] = new   Kinetic.Text( { 
+text : normalizeString('Find out the figure which does not belong to the group'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 17.054945054945055, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 72, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 132, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['aa8186_1c3ad6ad_ae']);  
+   id2figs['a7_3d59_537c2d3_73'] = new   Kinetic.R9Star( { 
+endX : 99.0, 
+endY : 149.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 99.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a7_3d59_537c2d3_73']);  
+   id2figs['ab4454dc55ba_8_73c'] = new   Kinetic.R9Star( { 
+endX : 100.0, 
+endY : 151.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 228.0, 
+startY : 151.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ab4454dc55ba_8_73c']);  
+   id2figs['a_3744_c49abbaca1b'] = new   Kinetic.R9Star( { 
+endX : 230.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 230.0, 
+startY : 269.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_3744_c49abbaca1b']);  
+   id2figs['a83b22a1735147521_'] = new   Kinetic.R9Star( { 
+endX : 100.0, 
+endY : 270.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 230.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a83b22a1735147521_']);  
+   id2figs['a_8_4a15bfb08468_4'] = new   Kinetic.R9Star( { 
+endX : 170.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 100.0, 
+startY : 210.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_8_4a15bfb08468_4']);  
+   id2figs['a5fecc0f05cf05325c'] = new   Kinetic.R9Star( { 
+endX : 170.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 230.0, 
+startY : 210.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a5fecc0f05cf05325c']);  
+   id2figs['a9b414df110330b169'] = new   Kinetic.R9Star( { 
+endX : 100.0, 
+endY : 210.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 170.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a9b414df110330b169']);  
+   id2figs['ad00cfcbc2fd048c_d'] = new   Kinetic.R9Star( { 
+endX : 230.0, 
+endY : 210.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 170.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ad00cfcbc2fd048c_d']);  
+   id2figs['ad00_d7dd5f4b8d4_c'] = new   Kinetic.R9Star( { 
+endX : 340.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 250.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ad00_d7dd5f4b8d4_c']);  
+   id2figs['a4f4_763b4e1b6b378'] = new   Kinetic.R9Star( { 
+endX : 340.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a4f4_763b4e1b6b378']);  
+   id2figs['aaa9b0a190_0815dab'] = new   Kinetic.R9Star( { 
+endX : 250.0, 
+endY : 270.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['aaa9b0a190_0815dab']);  
+   id2figs['a3_4_1c7a7c8ea182f'] = new   Kinetic.R9Star( { 
+endX : 295.0, 
+endY : 210.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 375.0, 
+startY : 210.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a3_4_1c7a7c8ea182f']);  
+   id2figs['a27_f_bf5ec7_15b56'] = new   Kinetic.R9Star( { 
+endX : 297.0, 
+endY : 211.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 339.0, 
+startY : 267.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a27_f_bf5ec7_15b56']);  
+   id2figs['a0a039a22b3_a9a493'] = new   Kinetic.R9Star( { 
+endX : 339.0, 
+endY : 268.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 375.0, 
+startY : 210.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a0a039a22b3_a9a493']);  
+   id2figs['ad7df8c106c9f6bb72'] = new   Kinetic.R9Star( { 
+endX : 536.0, 
+endY : 140.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 429.0, 
+startY : 217.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ad7df8c106c9f6bb72']);  
+   id2figs['a5018eb6c02_169f_0'] = new   Kinetic.R9Star( { 
+endX : 540.0, 
+endY : 143.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 620.0, 
+startY : 219.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a5018eb6c02_169f_0']);  
+   id2figs['a811fb2_c8adbdb148'] = new   Kinetic.R9Star( { 
+endX : 430.0, 
+endY : 221.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 527.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a811fb2_c8adbdb148']);  
+   id2figs['ad700ce24f0e78e_77'] = new   Kinetic.R9Star( { 
+endX : 620.0, 
+endY : 220.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 528.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ad700ce24f0e78e_77']);  
+   id2figs['a2c22aa7f04f870d3a'] = new   Kinetic.R9Star( { 
+endX : 490.0, 
+endY : 176.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 490.0, 
+startY : 248.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a2c22aa7f04f870d3a']);  
+   id2figs['a_838b1cbe5_ad2954'] = new   Kinetic.R9Star( { 
+endX : 571.0, 
+endY : 179.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 573.0, 
+startY : 245.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_838b1cbe5_ad2954']);  
+   id2figs['a30836__0bd3432ddf'] = new   Kinetic.R9Star( { 
+endX : 491.0, 
+endY : 246.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 571.0, 
+startY : 246.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a30836__0bd3432ddf']);  
+   id2figs['a854b0f_4b5f35f6a6'] = new   Kinetic.R9Star( { 
+endX : 490.0, 
+endY : 175.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 573.0, 
+startY : 174.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a854b0f_4b5f35f6a6']);  
+   id2figs['a8e69999f_b8__b_89'] = new   Kinetic.R9Star( { 
+endX : 275.0, 
+endY : 322.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 179.0, 
+startY : 428.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a8e69999f_b8__b_89']);  
+   id2figs['a_a8a5c1a62_acca02'] = new   Kinetic.R9Star( { 
+endX : 271.0, 
+endY : 326.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 466.0, 
+startY : 328.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_a8a5c1a62_acca02']);  
+   id2figs['a05064_0fcf_e_e_70'] = new   Kinetic.R9Star( { 
+endX : 464.0, 
+endY : 336.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 382.0, 
+startY : 433.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a05064_0fcf_e_e_70']);  
+   id2figs['a7a36fe43df3f1_f_3'] = new   Kinetic.R9Star( { 
+endX : 180.0, 
+endY : 430.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 386.0, 
+startY : 431.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a7a36fe43df3f1_f_3']);  
+   id2figs['a40661068a310b1_4a'] = new   Kinetic.R9Star( { 
+endX : 227.0, 
+endY : 375.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 339.0, 
+startY : 328.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a40661068a310b1_4a']);  
+   id2figs['a_3_f5c7b4_4e1f84f'] = new   Kinetic.R9Star( { 
+endX : 228.0, 
+endY : 382.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 279.0, 
+startY : 429.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_3_f5c7b4_4e1f84f']);  
+   id2figs['a3f19146e7726cb9c4'] = new   Kinetic.R9Star( { 
+endX : 341.0, 
+endY : 328.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 418.0, 
+startY : 390.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a3f19146e7726cb9c4']);  
+   id2figs['a2c12bb527bc2985c2'] = new   Kinetic.R9Star( { 
+endX : 281.0, 
+endY : 428.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 415.0, 
+startY : 390.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a2c12bb527bc2985c2']);  
+   id2figs['a_57437df7fc5e4_62'] = new   Kinetic.Ellipse( { 
+radius  : { x: 55.5 , y: 27.0}, 
+strokeBlue : 1, 
+fillGreen : 225, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 27, 
+fillAlpha : 0.7472527472527473, 
+fillBlue : 0, 
+y : 399, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 558, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_57437df7fc5e4_62']);  
+   id2figs['a577_7749d89892337'] = new   Kinetic.Text( { 
+text : normalizeString('Click Me'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 388, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 530, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a577_7749d89892337']);  
+  id2figs['a577_7749d89892337'].off('click tap');
+  id2figs['a577_7749d89892337'].on('click tap', function() {   
+     r9player.showMessage( contentlay,  'a577_7749d89892337',  normalizeString('check the number of sides') , 900, 570, 4);  
+    if ( usetts   ){
+        var msg = new SpeechSynthesisUtterance(normalizeString('check the number of sides'));
+       msg.lang = 'en-US'; 
+        window.speechSynthesis.speak(msg);
+     } 
+   } );  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa594dba_1bc24_5ab'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 74, 
+fontSize : 12.13186813186813, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 168, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 9, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa8186_1c3ad6ad_ae'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 132, 
+ y : 72, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7_3d59_537c2d3_73'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 99.0, 
+ startY : 270.0, 
+ endX : 99.0, 
+ endY : 149.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab4454dc55ba_8_73c'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 228.0, 
+ startY : 151.0, 
+ endX : 100.0, 
+ endY : 151.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_3744_c49abbaca1b'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 230.0, 
+ startY : 269.0, 
+ endX : 230.0, 
+ endY : 150.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a83b22a1735147521_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 230.0, 
+ startY : 270.0, 
+ endX : 100.0, 
+ endY : 270.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_8_4a15bfb08468_4'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 100.0, 
+ startY : 210.0, 
+ endX : 170.0, 
+ endY : 150.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5fecc0f05cf05325c'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 230.0, 
+ startY : 210.0, 
+ endX : 170.0, 
+ endY : 150.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9b414df110330b169'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 170.0, 
+ startY : 270.0, 
+ endX : 100.0, 
+ endY : 210.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad00cfcbc2fd048c_d'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 170.0, 
+ startY : 270.0, 
+ endX : 230.0, 
+ endY : 210.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad00_d7dd5f4b8d4_c'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 250.0, 
+ startY : 270.0, 
+ endX : 340.0, 
+ endY : 150.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4f4_763b4e1b6b378'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 410.0, 
+ startY : 270.0, 
+ endX : 340.0, 
+ endY : 150.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aaa9b0a190_0815dab'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 410.0, 
+ startY : 270.0, 
+ endX : 250.0, 
+ endY : 270.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3_4_1c7a7c8ea182f'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 375.0, 
+ startY : 210.0, 
+ endX : 295.0, 
+ endY : 210.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a27_f_bf5ec7_15b56'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 339.0, 
+ startY : 267.0, 
+ endX : 297.0, 
+ endY : 211.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0a039a22b3_a9a493'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 375.0, 
+ startY : 210.0, 
+ endX : 339.0, 
+ endY : 268.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad7df8c106c9f6bb72'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 429.0, 
+ startY : 217.0, 
+ endX : 536.0, 
+ endY : 140.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5018eb6c02_169f_0'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 620.0, 
+ startY : 219.0, 
+ endX : 540.0, 
+ endY : 143.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a811fb2_c8adbdb148'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 527.0, 
+ startY : 270.0, 
+ endX : 430.0, 
+ endY : 221.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad700ce24f0e78e_77'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 528.0, 
+ startY : 270.0, 
+ endX : 620.0, 
+ endY : 220.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2c22aa7f04f870d3a'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 490.0, 
+ startY : 248.0, 
+ endX : 490.0, 
+ endY : 176.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_838b1cbe5_ad2954'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 573.0, 
+ startY : 245.0, 
+ endX : 571.0, 
+ endY : 179.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a30836__0bd3432ddf'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 571.0, 
+ startY : 246.0, 
+ endX : 491.0, 
+ endY : 246.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a854b0f_4b5f35f6a6'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 573.0, 
+ startY : 174.0, 
+ endX : 490.0, 
+ endY : 175.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8e69999f_b8__b_89'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 179.0, 
+ startY : 428.0, 
+ endX : 275.0, 
+ endY : 322.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a8a5c1a62_acca02'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 466.0, 
+ startY : 328.0, 
+ endX : 271.0, 
+ endY : 326.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a05064_0fcf_e_e_70'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 382.0, 
+ startY : 433.0, 
+ endX : 464.0, 
+ endY : 336.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7a36fe43df3f1_f_3'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 386.0, 
+ startY : 431.0, 
+ endX : 180.0, 
+ endY : 430.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a40661068a310b1_4a'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 339.0, 
+ startY : 328.0, 
+ endX : 227.0, 
+ endY : 375.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_3_f5c7b4_4e1f84f'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 279.0, 
+ startY : 429.0, 
+ endX : 228.0, 
+ endY : 382.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3f19146e7726cb9c4'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 418.0, 
+ startY : 390.0, 
+ endX : 341.0, 
+ endY : 328.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2c12bb527bc2985c2'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 415.0, 
+ startY : 390.0, 
+ endX : 281.0, 
+ endY : 428.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_57437df7fc5e4_62'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 558, 
+ y : 399, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a577_7749d89892337'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 530, 
+ y : 388, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = true;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+  id2figs['a577_7749d89892337'].off('click tap');
+  id2figs['a577_7749d89892337'].on('click tap', function() {   
+     r9player.showMessage( contentlay,  'a577_7749d89892337',  normalizeString('check the number of sides') , 900, 570, 4);  
+    if ( usetts   ){
+        var msg = new SpeechSynthesisUtterance(normalizeString('check the number of sides'));
+       msg.lang = 'en-US'; 
+        window.speechSynthesis.speak(msg);
+     } 
+   } );  
+   id2figs['a409_69709_4284f4b'] = new   Kinetic.Sprite( { 
+animations : { idle: [ 0,0,6,60,6,0,6,60,12,0,6,60,18,0,6,60,24,0,6,60], punch: [ 0,0,6,60,6,0,6,60,12,0,6,60,18,0,6,60,24,0,6,60 ] }, 
+animation : 'idle', 
+image_src : v_spring_60.jpg, 
+image : v_spring_60, 
+frameIndex : 0, 
+frameRate : 5, 
+y : 188.0, 
+x : 339.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a409_69709_4284f4b']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa594dba_1bc24_5ab'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 74, 
+fontSize : 12.13186813186813, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 168, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 9, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa8186_1c3ad6ad_ae'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 17.054945054945055, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 72, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 132, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7_3d59_537c2d3_73'],
+endX : 99.0, 
+endY : 149.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 99.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab4454dc55ba_8_73c'],
+endX : 100.0, 
+endY : 151.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 228.0, 
+startY : 151.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_3744_c49abbaca1b'],
+endX : 230.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 230.0, 
+startY : 269.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a83b22a1735147521_'],
+endX : 100.0, 
+endY : 270.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 230.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_8_4a15bfb08468_4'],
+endX : 170.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 100.0, 
+startY : 210.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5fecc0f05cf05325c'],
+endX : 170.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 230.0, 
+startY : 210.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9b414df110330b169'],
+endX : 100.0, 
+endY : 210.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 170.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad00cfcbc2fd048c_d'],
+endX : 230.0, 
+endY : 210.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 170.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad00_d7dd5f4b8d4_c'],
+endX : 340.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 250.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4f4_763b4e1b6b378'],
+endX : 340.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aaa9b0a190_0815dab'],
+endX : 250.0, 
+endY : 270.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3_4_1c7a7c8ea182f'],
+endX : 295.0, 
+endY : 210.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 375.0, 
+startY : 210.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a27_f_bf5ec7_15b56'],
+endX : 297.0, 
+endY : 211.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 339.0, 
+startY : 267.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0a039a22b3_a9a493'],
+endX : 339.0, 
+endY : 268.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 375.0, 
+startY : 210.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad7df8c106c9f6bb72'],
+endX : 536.0, 
+endY : 140.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 429.0, 
+startY : 217.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5018eb6c02_169f_0'],
+endX : 540.0, 
+endY : 143.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 620.0, 
+startY : 219.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a811fb2_c8adbdb148'],
+endX : 430.0, 
+endY : 221.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 527.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad700ce24f0e78e_77'],
+endX : 620.0, 
+endY : 220.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 528.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2c22aa7f04f870d3a'],
+endX : 490.0, 
+endY : 176.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 490.0, 
+startY : 248.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_838b1cbe5_ad2954'],
+endX : 571.0, 
+endY : 179.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 573.0, 
+startY : 245.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a30836__0bd3432ddf'],
+endX : 491.0, 
+endY : 246.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 571.0, 
+startY : 246.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a854b0f_4b5f35f6a6'],
+endX : 490.0, 
+endY : 175.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 573.0, 
+startY : 174.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8e69999f_b8__b_89'],
+endX : 275.0, 
+endY : 322.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 179.0, 
+startY : 428.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a8a5c1a62_acca02'],
+endX : 271.0, 
+endY : 326.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 466.0, 
+startY : 328.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a05064_0fcf_e_e_70'],
+endX : 464.0, 
+endY : 336.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 382.0, 
+startY : 433.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7a36fe43df3f1_f_3'],
+endX : 180.0, 
+endY : 430.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 386.0, 
+startY : 431.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a40661068a310b1_4a'],
+endX : 227.0, 
+endY : 375.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 339.0, 
+startY : 328.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_3_f5c7b4_4e1f84f'],
+endX : 228.0, 
+endY : 382.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 279.0, 
+startY : 429.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3f19146e7726cb9c4'],
+endX : 341.0, 
+endY : 328.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 418.0, 
+startY : 390.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2c12bb527bc2985c2'],
+endX : 281.0, 
+endY : 428.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 415.0, 
+startY : 390.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_57437df7fc5e4_62'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_57437df7fc5e4_62'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a577_7749d89892337'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a577_7749d89892337'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a409_69709_4284f4b'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 339.0, 
+ y : 188.0, 
+duration: 1
+  })  );
+id2figs['a409_69709_4284f4b'].start();
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a2510e_a2dc_a0adec'] = new   Kinetic.R9Star( { 
+endX : 180.0, 
+endY : 170.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 180.0, 
+startY : 200.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a2510e_a2dc_a0adec']);  
+   id2figs['a3d8__099997a__8a9'] = new   Kinetic.R9Star( { 
+endX : 180.0, 
+endY : 170.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 210.0, 
+startY : 170.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a3d8__099997a__8a9']);  
+   id2figs['a94f_ef9f672660572'] = new   Kinetic.R9Star( { 
+endX : 210.0, 
+endY : 170.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 210.0, 
+startY : 200.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a94f_ef9f672660572']);  
+   id2figs['a__813b48a435_dff_'] = new   Kinetic.R9Star( { 
+endX : 180.0, 
+endY : 200.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 210.0, 
+startY : 200.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a__813b48a435_dff_']);  
+   id2figs['af9_ca5317feb2d0ab'] = new   Kinetic.R9Star( { 
+endX : 340.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['af9_ca5317feb2d0ab']);  
+   id2figs['a22bfff2__ff97d982'] = new   Kinetic.R9Star( { 
+endX : 308.0, 
+endY : 226.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 280.0, 
+startY : 260.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a22bfff2__ff97d982']);  
+   id2figs['af_ccaa4f_c_1a3c4c'] = new   Kinetic.R9Star( { 
+endX : 360.0, 
+endY : 225.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 380.0, 
+startY : 260.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['af_ccaa4f_c_1a3c4c']);  
+   id2figs['a088_084c78d9c7_8_'] = new   Kinetic.R9Star( { 
+endX : 280.0, 
+endY : 260.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 380.0, 
+startY : 260.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a088_084c78d9c7_8_']);  
+   id2figs['ad2f12_3b32dd2cac0'] = new   Kinetic.Ellipse( { 
+radius  : { x: 65.0 , y: 60.0}, 
+strokeBlue : 1, 
+fillGreen : 160, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 160, 
+fillAlpha : 0.10989010989010989, 
+fillBlue : 160, 
+y : 210, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 535, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ad2f12_3b32dd2cac0']);  
+   id2figs['affcc_ae83aa064cac'] = new   Kinetic.Ellipse( { 
+radius  : { x: 10.0 , y: 10.0}, 
+strokeBlue : 1, 
+fillGreen : 160, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 160, 
+fillAlpha : 1.0, 
+fillBlue : 160, 
+y : 180, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 510, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['affcc_ae83aa064cac']);  
+   id2figs['a6638590801_8_8393'] = new   Kinetic.R9Star( { 
+endX : 100.0, 
+endY : 300.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 100.0, 
+startY : 430.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a6638590801_8_8393']);  
+   id2figs['ab2ab8b11e1cd8d_bb'] = new   Kinetic.R9Star( { 
+endX : 100.0, 
+endY : 300.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 240.0, 
+startY : 430.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ab2ab8b11e1cd8d_bb']);  
+   id2figs['ab703e26dc3_c6_aee'] = new   Kinetic.R9Star( { 
+endX : 100.0, 
+endY : 430.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 240.0, 
+startY : 430.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ab703e26dc3_c6_aee']);  
+   id2figs['a9e22_e942b_14c9_6'] = new   Kinetic.R9Star( { 
+endX : 185.0, 
+endY : 403.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 185.0, 
+startY : 422.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a9e22_e942b_14c9_6']);  
+   id2figs['a041ef254b9e9b3a90'] = new   Kinetic.R9Star( { 
+endX : 188.0, 
+endY : 404.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 211.0, 
+startY : 422.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a041ef254b9e9b3a90']);  
+   id2figs['a_7b34a36b_571_334'] = new   Kinetic.R9Star( { 
+endX : 185.0, 
+endY : 422.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 212.0, 
+startY : 422.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_7b34a36b_571_334']);  
+   id2figs['a6bae162c9_1_e127d'] = new   Kinetic.R9Star( { 
+endX : 269.0, 
+endY : 301.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 470.0, 
+startY : 302.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a6bae162c9_1_e127d']);  
+   id2figs['aa68_545_86555a8f4'] = new   Kinetic.R9Star( { 
+endX : 269.0, 
+endY : 305.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 309.0, 
+startY : 430.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['aa68_545_86555a8f4']);  
+   id2figs['a_a70a4f__7a67a4_7'] = new   Kinetic.R9Star( { 
+endX : 470.0, 
+endY : 301.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 519.0, 
+startY : 429.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_a70a4f__7a67a4_7']);  
+   id2figs['a4ad6e68_3adb6c0_6'] = new   Kinetic.R9Star( { 
+endX : 310.0, 
+endY : 431.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 518.0, 
+startY : 431.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a4ad6e68_3adb6c0_6']);  
+   id2figs['a5_5cc28c1725c6216'] = new   Kinetic.R9Star( { 
+endX : 295.0, 
+endY : 321.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 305.0, 
+startY : 348.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a5_5cc28c1725c6216']);  
+   id2figs['a2d1__6e1_d40ccc17'] = new   Kinetic.R9Star( { 
+endX : 294.0, 
+endY : 323.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 329.0, 
+startY : 323.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a2d1__6e1_d40ccc17']);  
+   id2figs['a_e85653b66_5356b3'] = new   Kinetic.R9Star( { 
+endX : 304.0, 
+endY : 347.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 335.0, 
+startY : 347.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_e85653b66_5356b3']);  
+   id2figs['ac_b5bdb4171fb006d'] = new   Kinetic.R9Star( { 
+endX : 328.0, 
+endY : 323.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 335.0, 
+startY : 349.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ac_b5bdb4171fb006d']);  
+   id2figs['a945a9e_998d7b6_b0'] = new   Kinetic.Ellipse( { 
+radius  : { x: 46.0 , y: 32.0}, 
+strokeBlue : 1, 
+fillGreen : 255, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 87, 
+fillAlpha : 1.0, 
+fillBlue : 252, 
+y : 388, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 606, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a945a9e_998d7b6_b0']);  
+   id2figs['a294977433c83e25_c'] = new   Kinetic.Text( { 
+text : normalizeString('Click Me'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 377, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 579, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a294977433c83e25_c']);  
+  id2figs['a294977433c83e25_c'].off('click tap');
+  id2figs['a294977433c83e25_c'].on('click tap', function() {   
+     r9player.showMessage( contentlay,  'a294977433c83e25_c',  normalizeString('Smaller figure is similar to Bigger one') , 900, 570, 4);  
+    if ( usetts   ){
+        var msg = new SpeechSynthesisUtterance(normalizeString('Smaller figure is similar to Bigger one'));
+       msg.lang = 'en-US'; 
+        window.speechSynthesis.speak(msg);
+     } 
+   } );  
+   id2figs['ac48e4244c9451cd4d'] = new   Kinetic.R9Star( { 
+endX : 310.0, 
+endY : 227.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 360.0, 
+startY : 226.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ac48e4244c9451cd4d']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa594dba_1bc24_5ab'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 74, 
+fontSize : 12.13186813186813, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 168, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 9, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa8186_1c3ad6ad_ae'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 17.054945054945055, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 72, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 132, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7_3d59_537c2d3_73'],
+endX : 99.0, 
+endY : 149.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 99.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab4454dc55ba_8_73c'],
+endX : 100.0, 
+endY : 151.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 228.0, 
+startY : 151.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_3744_c49abbaca1b'],
+endX : 230.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 230.0, 
+startY : 269.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a83b22a1735147521_'],
+endX : 100.0, 
+endY : 270.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 230.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_8_4a15bfb08468_4'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_8_4a15bfb08468_4'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5fecc0f05cf05325c'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a5fecc0f05cf05325c'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9b414df110330b169'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a9b414df110330b169'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad00cfcbc2fd048c_d'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ad00cfcbc2fd048c_d'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad00_d7dd5f4b8d4_c'],
+endX : 340.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 250.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4f4_763b4e1b6b378'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a4f4_763b4e1b6b378'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aaa9b0a190_0815dab'],
+endX : 250.0, 
+endY : 270.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3_4_1c7a7c8ea182f'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a3_4_1c7a7c8ea182f'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a27_f_bf5ec7_15b56'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a27_f_bf5ec7_15b56'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0a039a22b3_a9a493'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a0a039a22b3_a9a493'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad7df8c106c9f6bb72'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ad7df8c106c9f6bb72'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5018eb6c02_169f_0'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a5018eb6c02_169f_0'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a811fb2_c8adbdb148'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a811fb2_c8adbdb148'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad700ce24f0e78e_77'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ad700ce24f0e78e_77'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2c22aa7f04f870d3a'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a2c22aa7f04f870d3a'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_838b1cbe5_ad2954'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_838b1cbe5_ad2954'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a30836__0bd3432ddf'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a30836__0bd3432ddf'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a854b0f_4b5f35f6a6'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a854b0f_4b5f35f6a6'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8e69999f_b8__b_89'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a8e69999f_b8__b_89'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a8a5c1a62_acca02'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_a8a5c1a62_acca02'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a05064_0fcf_e_e_70'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a05064_0fcf_e_e_70'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7a36fe43df3f1_f_3'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a7a36fe43df3f1_f_3'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a40661068a310b1_4a'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a40661068a310b1_4a'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_3_f5c7b4_4e1f84f'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_3_f5c7b4_4e1f84f'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3f19146e7726cb9c4'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a3f19146e7726cb9c4'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2c12bb527bc2985c2'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a2c12bb527bc2985c2'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a409_69709_4284f4b'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a409_69709_4284f4b'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2510e_a2dc_a0adec'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 180.0, 
+ startY : 200.0, 
+ endX : 180.0, 
+ endY : 170.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3d8__099997a__8a9'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 210.0, 
+ startY : 170.0, 
+ endX : 180.0, 
+ endY : 170.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f_ef9f672660572'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 210.0, 
+ startY : 200.0, 
+ endX : 210.0, 
+ endY : 170.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a__813b48a435_dff_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 210.0, 
+ startY : 200.0, 
+ endX : 180.0, 
+ endY : 200.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af9_ca5317feb2d0ab'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 410.0, 
+ startY : 270.0, 
+ endX : 340.0, 
+ endY : 150.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a22bfff2__ff97d982'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 280.0, 
+ startY : 260.0, 
+ endX : 308.0, 
+ endY : 226.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af_ccaa4f_c_1a3c4c'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 380.0, 
+ startY : 260.0, 
+ endX : 360.0, 
+ endY : 225.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a088_084c78d9c7_8_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 380.0, 
+ startY : 260.0, 
+ endX : 280.0, 
+ endY : 260.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad2f12_3b32dd2cac0'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 535, 
+ y : 210, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['affcc_ae83aa064cac'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 510, 
+ y : 180, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6638590801_8_8393'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 100.0, 
+ startY : 430.0, 
+ endX : 100.0, 
+ endY : 300.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab2ab8b11e1cd8d_bb'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 240.0, 
+ startY : 430.0, 
+ endX : 100.0, 
+ endY : 300.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab703e26dc3_c6_aee'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 240.0, 
+ startY : 430.0, 
+ endX : 100.0, 
+ endY : 430.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9e22_e942b_14c9_6'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 185.0, 
+ startY : 422.0, 
+ endX : 185.0, 
+ endY : 403.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a041ef254b9e9b3a90'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 211.0, 
+ startY : 422.0, 
+ endX : 188.0, 
+ endY : 404.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_7b34a36b_571_334'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 212.0, 
+ startY : 422.0, 
+ endX : 185.0, 
+ endY : 422.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6bae162c9_1_e127d'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 470.0, 
+ startY : 302.0, 
+ endX : 269.0, 
+ endY : 301.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa68_545_86555a8f4'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 309.0, 
+ startY : 430.0, 
+ endX : 269.0, 
+ endY : 305.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a70a4f__7a67a4_7'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 519.0, 
+ startY : 429.0, 
+ endX : 470.0, 
+ endY : 301.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4ad6e68_3adb6c0_6'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 518.0, 
+ startY : 431.0, 
+ endX : 310.0, 
+ endY : 431.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5_5cc28c1725c6216'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 305.0, 
+ startY : 348.0, 
+ endX : 295.0, 
+ endY : 321.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2d1__6e1_d40ccc17'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 329.0, 
+ startY : 323.0, 
+ endX : 294.0, 
+ endY : 323.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_e85653b66_5356b3'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 335.0, 
+ startY : 347.0, 
+ endX : 304.0, 
+ endY : 347.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac_b5bdb4171fb006d'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 335.0, 
+ startY : 349.0, 
+ endX : 328.0, 
+ endY : 323.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a945a9e_998d7b6_b0'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 606, 
+ y : 388, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a294977433c83e25_c'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 579, 
+ y : 377, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac48e4244c9451cd4d'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 360.0, 
+ startY : 226.0, 
+ endX : 310.0, 
+ endY : 227.0, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = true;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+  id2figs['a294977433c83e25_c'].off('click tap');
+  id2figs['a294977433c83e25_c'].on('click tap', function() {   
+     r9player.showMessage( contentlay,  'a294977433c83e25_c',  normalizeString('Smaller figure is similar to Bigger one') , 900, 570, 4);  
+    if ( usetts   ){
+        var msg = new SpeechSynthesisUtterance(normalizeString('Smaller figure is similar to Bigger one'));
+       msg.lang = 'en-US'; 
+        window.speechSynthesis.speak(msg);
+     } 
+   } );  
+   id2figs['a7_849f6_60f_a_e97'] = new   Kinetic.Sprite( { 
+animations : { idle: [ 0,0,6,60,6,0,6,60,12,0,6,60,18,0,6,60], punch: [ 0,0,6,60,6,0,6,60,12,0,6,60,18,0,6,60 ] }, 
+animation : 'idle', 
+image_src : v_flash_60.jpg, 
+image : v_flash_60, 
+frameIndex : 0, 
+frameRate : 5, 
+y : 188.0, 
+x : 338.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a7_849f6_60f_a_e97']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa594dba_1bc24_5ab'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 74, 
+fontSize : 12.13186813186813, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 168, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 9, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa8186_1c3ad6ad_ae'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 17.054945054945055, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 72, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 132, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7_3d59_537c2d3_73'],
+endX : 99.0, 
+endY : 149.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 99.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab4454dc55ba_8_73c'],
+endX : 100.0, 
+endY : 151.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 228.0, 
+startY : 151.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_3744_c49abbaca1b'],
+endX : 230.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 230.0, 
+startY : 269.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a83b22a1735147521_'],
+endX : 100.0, 
+endY : 270.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 230.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad00_d7dd5f4b8d4_c'],
+endX : 340.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 250.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aaa9b0a190_0815dab'],
+endX : 250.0, 
+endY : 270.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2510e_a2dc_a0adec'],
+endX : 180.0, 
+endY : 170.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 180.0, 
+startY : 200.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3d8__099997a__8a9'],
+endX : 180.0, 
+endY : 170.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 210.0, 
+startY : 170.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f_ef9f672660572'],
+endX : 210.0, 
+endY : 170.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 210.0, 
+startY : 200.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a__813b48a435_dff_'],
+endX : 180.0, 
+endY : 200.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 210.0, 
+startY : 200.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af9_ca5317feb2d0ab'],
+endX : 340.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a22bfff2__ff97d982'],
+endX : 308.0, 
+endY : 226.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 280.0, 
+startY : 260.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af_ccaa4f_c_1a3c4c'],
+endX : 360.0, 
+endY : 225.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 380.0, 
+startY : 260.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a088_084c78d9c7_8_'],
+endX : 280.0, 
+endY : 260.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 380.0, 
+startY : 260.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad2f12_3b32dd2cac0'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 160, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 0.10989010989010989, 
+fillRed : 160, 
+fillAlpha : 0.10989010989010989, 
+fillBlue : 160, 
+y : 210, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 535, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['affcc_ae83aa064cac'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 160, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 160, 
+fillAlpha : 1.0, 
+fillBlue : 160, 
+y : 180, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 510, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6638590801_8_8393'],
+endX : 100.0, 
+endY : 300.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 100.0, 
+startY : 430.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab2ab8b11e1cd8d_bb'],
+endX : 100.0, 
+endY : 300.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 240.0, 
+startY : 430.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab703e26dc3_c6_aee'],
+endX : 100.0, 
+endY : 430.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 240.0, 
+startY : 430.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9e22_e942b_14c9_6'],
+endX : 185.0, 
+endY : 403.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 185.0, 
+startY : 422.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a041ef254b9e9b3a90'],
+endX : 188.0, 
+endY : 404.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 211.0, 
+startY : 422.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_7b34a36b_571_334'],
+endX : 185.0, 
+endY : 422.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 212.0, 
+startY : 422.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6bae162c9_1_e127d'],
+endX : 269.0, 
+endY : 301.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 470.0, 
+startY : 302.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa68_545_86555a8f4'],
+endX : 269.0, 
+endY : 305.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 309.0, 
+startY : 430.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a70a4f__7a67a4_7'],
+endX : 470.0, 
+endY : 301.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 519.0, 
+startY : 429.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4ad6e68_3adb6c0_6'],
+endX : 310.0, 
+endY : 431.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 518.0, 
+startY : 431.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5_5cc28c1725c6216'],
+endX : 295.0, 
+endY : 321.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 305.0, 
+startY : 348.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2d1__6e1_d40ccc17'],
+endX : 294.0, 
+endY : 323.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 329.0, 
+startY : 323.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_e85653b66_5356b3'],
+endX : 304.0, 
+endY : 347.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 335.0, 
+startY : 347.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac_b5bdb4171fb006d'],
+endX : 328.0, 
+endY : 323.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 335.0, 
+startY : 349.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a945a9e_998d7b6_b0'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a945a9e_998d7b6_b0'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a294977433c83e25_c'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a294977433c83e25_c'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac48e4244c9451cd4d'],
+endX : 310.0, 
+endY : 227.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 360.0, 
+startY : 226.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7_849f6_60f_a_e97'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 338.0, 
+ y : 188.0, 
+duration: 1
+  })  );
+id2figs['a7_849f6_60f_a_e97'].start();
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['ab96f7265bf_01b762'] = new   Kinetic.R9Star( { 
+endX : 140.0, 
+endY : 130.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 140.0, 
+startY : 240.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ab96f7265bf_01b762']);  
+   id2figs['a2244_e3519e24cd59'] = new   Kinetic.R9Star( { 
+endX : 140.0, 
+endY : 130.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 140.0, 
+startY : 240.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a2244_e3519e24cd59']);  
+   id2figs['aad117a1754d83d8_1'] = new   Kinetic.R9Star( { 
+endX : 140.0, 
+endY : 130.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 140.0, 
+startY : 240.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['aad117a1754d83d8_1']);  
+   id2figs['aaf324ee92_49e6521'] = new   Kinetic.R9Star( { 
+endX : 260.0, 
+endY : 130.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 260.0, 
+startY : 240.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['aaf324ee92_49e6521']);  
+   id2figs['a_f84ceac8e7ee4ede'] = new   Kinetic.R9Star( { 
+endX : 140.0, 
+endY : 240.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 260.0, 
+startY : 240.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_f84ceac8e7ee4ede']);  
+   id2figs['a11fc4e1_5660ea445'] = new   Kinetic.R9Star( { 
+endX : 140.0, 
+endY : 130.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 260.0, 
+startY : 130.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a11fc4e1_5660ea445']);  
+   id2figs['a7_55ebee005b2e01c'] = new   Kinetic.Ellipse( { 
+radius  : { x: 50.0 , y: 50.0}, 
+strokeBlue : 1, 
+fillGreen : 126, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 18, 
+y : 220, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 390, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a7_55ebee005b2e01c']);  
+   id2figs['a64f61b6d494d2108e'] = new   Kinetic.Ellipse( { 
+radius  : { x: 45.0 , y: 50.0}, 
+strokeBlue : 1, 
+fillGreen : 177, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 85, 
+y : 180, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 425, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a64f61b6d494d2108e']);  
+   id2figs['a4a380a833e14a799_'] = new   Kinetic.Ellipse( { 
+radius  : { x: 50.0 , y: 50.0}, 
+strokeBlue : 1, 
+fillGreen : 165, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 99, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 380, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 190, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a4a380a833e14a799_']);  
+   id2figs['ab2a2f36f_d2b6_d8_'] = new   Kinetic.Ellipse( { 
+radius  : { x: 55.0 , y: 50.0}, 
+strokeBlue : 1, 
+fillGreen : 210, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 210, 
+y : 330, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 195, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ab2a2f36f_d2b6_d8_']);  
+   id2figs['a09_97bc47_d9dfd34'] = new   Kinetic.RegularPolygon( { 
+strokeBlue : 1, 
+fillGreen : 12, 
+rotation : 40.13548555307535, 
+strokeGreen : 1, 
+radius : 66.70832032063167, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 207, 
+y : 400.0, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 400.0, 
+sides : 5, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a09_97bc47_d9dfd34']);  
+   id2figs['a0f6a_305f3fd95cfc'] = new   Kinetic.RegularPolygon( { 
+strokeBlue : 1, 
+fillGreen : 133, 
+rotation : 39.50767543385179, 
+strokeGreen : 1, 
+radius : 73.87827826905551, 
+fillRed : 141, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 350.0, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 430.0, 
+sides : 5, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a0f6a_305f3fd95cfc']);  
+   id2figs['a_21e22fee1e2de447'] = new   Kinetic.R9Star( { 
+endX : 510.0, 
+endY : 160.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 510.0, 
+startY : 290.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_21e22fee1e2de447']);  
+   id2figs['a9__6bd64f4d1a6c58'] = new   Kinetic.R9Star( { 
+endX : 660.0, 
+endY : 160.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 660.0, 
+startY : 290.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a9__6bd64f4d1a6c58']);  
+   id2figs['a0eed2650_d0c29fe0'] = new   Kinetic.R9Star( { 
+endX : 510.0, 
+endY : 160.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 660.0, 
+startY : 160.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a0eed2650_d0c29fe0']);  
+   id2figs['ab13__219e3784f285'] = new   Kinetic.R9Star( { 
+endX : 510.0, 
+endY : 290.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 660.0, 
+startY : 290.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ab13__219e3784f285']);  
+   id2figs['a00deaffe784401a08'] = new   Kinetic.R9Star( { 
+endX : 550.0, 
+endY : 120.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 550.0, 
+startY : 160.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a00deaffe784401a08']);  
+   id2figs['a2543372898d_38748'] = new   Kinetic.R9Star( { 
+endX : 550.0, 
+endY : 120.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 700.0, 
+startY : 120.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a2543372898d_38748']);  
+   id2figs['a0f97c3_5f79e790_6'] = new   Kinetic.R9Star( { 
+endX : 700.0, 
+endY : 120.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 700.0, 
+startY : 250.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a0f97c3_5f79e790_6']);  
+   id2figs['a2548a2d5a7e64_70_'] = new   Kinetic.R9Star( { 
+endX : 660.0, 
+endY : 250.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 700.0, 
+startY : 250.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a2548a2d5a7e64_70_']);  
+   id2figs['a741_398883e15e4ae'] = new   Kinetic.Ellipse( { 
+radius  : { x: 65.0 , y: 25.0}, 
+strokeBlue : 1, 
+fillGreen : 189, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 72, 
+y : 405, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 595, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a741_398883e15e4ae']);  
+   id2figs['ad50090880_6e_4d08'] = new   Kinetic.Text( { 
+text : normalizeString('Click Me!'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 390, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 560, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ad50090880_6e_4d08']);  
+  id2figs['ad50090880_6e_4d08'].off('click tap');
+  id2figs['ad50090880_6e_4d08'].on('click tap', function() {   
+     r9player.showMessage( contentlay,  'ad50090880_6e_4d08',  normalizeString('Check the overlap pattern') , 900, 570, 4);  
+    if ( usetts   ){
+        var msg = new SpeechSynthesisUtterance(normalizeString('Check the overlap pattern'));
+       msg.lang = 'en-US'; 
+        window.speechSynthesis.speak(msg);
+     } 
+   } );  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa594dba_1bc24_5ab'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 74, 
+fontSize : 12.13186813186813, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 168, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 9, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa8186_1c3ad6ad_ae'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 17.054945054945055, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 72, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 132, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7_3d59_537c2d3_73'],
+endX : 99.0, 
+endY : 149.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 99.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab4454dc55ba_8_73c'],
+endX : 100.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 140.0, 
+startY : 150.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_3744_c49abbaca1b'],
+endX : 230.0, 
+endY : 240.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 230.0, 
+startY : 269.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a83b22a1735147521_'],
+endX : 100.0, 
+endY : 270.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 230.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad00_d7dd5f4b8d4_c'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ad00_d7dd5f4b8d4_c'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aaa9b0a190_0815dab'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['aaa9b0a190_0815dab'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2510e_a2dc_a0adec'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a2510e_a2dc_a0adec'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3d8__099997a__8a9'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a3d8__099997a__8a9'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f_ef9f672660572'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a94f_ef9f672660572'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a__813b48a435_dff_'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a__813b48a435_dff_'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af9_ca5317feb2d0ab'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['af9_ca5317feb2d0ab'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a22bfff2__ff97d982'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a22bfff2__ff97d982'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af_ccaa4f_c_1a3c4c'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['af_ccaa4f_c_1a3c4c'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a088_084c78d9c7_8_'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a088_084c78d9c7_8_'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad2f12_3b32dd2cac0'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ad2f12_3b32dd2cac0'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['affcc_ae83aa064cac'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['affcc_ae83aa064cac'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6638590801_8_8393'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a6638590801_8_8393'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab2ab8b11e1cd8d_bb'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ab2ab8b11e1cd8d_bb'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab703e26dc3_c6_aee'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ab703e26dc3_c6_aee'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9e22_e942b_14c9_6'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a9e22_e942b_14c9_6'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a041ef254b9e9b3a90'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a041ef254b9e9b3a90'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_7b34a36b_571_334'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_7b34a36b_571_334'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6bae162c9_1_e127d'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a6bae162c9_1_e127d'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa68_545_86555a8f4'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['aa68_545_86555a8f4'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a70a4f__7a67a4_7'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_a70a4f__7a67a4_7'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4ad6e68_3adb6c0_6'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a4ad6e68_3adb6c0_6'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5_5cc28c1725c6216'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a5_5cc28c1725c6216'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2d1__6e1_d40ccc17'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a2d1__6e1_d40ccc17'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_e85653b66_5356b3'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_e85653b66_5356b3'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac_b5bdb4171fb006d'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ac_b5bdb4171fb006d'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac48e4244c9451cd4d'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ac48e4244c9451cd4d'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7_849f6_60f_a_e97'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a7_849f6_60f_a_e97'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab96f7265bf_01b762'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 140.0, 
+ startY : 240.0, 
+ endX : 140.0, 
+ endY : 130.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2244_e3519e24cd59'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 140.0, 
+ startY : 240.0, 
+ endX : 140.0, 
+ endY : 130.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aad117a1754d83d8_1'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 140.0, 
+ startY : 240.0, 
+ endX : 140.0, 
+ endY : 130.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aaf324ee92_49e6521'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 260.0, 
+ startY : 240.0, 
+ endX : 260.0, 
+ endY : 130.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_f84ceac8e7ee4ede'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 260.0, 
+ startY : 240.0, 
+ endX : 140.0, 
+ endY : 240.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a11fc4e1_5660ea445'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 260.0, 
+ startY : 130.0, 
+ endX : 140.0, 
+ endY : 130.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7_55ebee005b2e01c'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 390, 
+ y : 220, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a64f61b6d494d2108e'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 425, 
+ y : 180, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4a380a833e14a799_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 190, 
+ y : 380, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab2a2f36f_d2b6_d8_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 195, 
+ y : 330, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a09_97bc47_d9dfd34'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 400.0, 
+ y : 400.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0f6a_305f3fd95cfc'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 430.0, 
+ y : 350.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_21e22fee1e2de447'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 510.0, 
+ startY : 290.0, 
+ endX : 510.0, 
+ endY : 160.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9__6bd64f4d1a6c58'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 660.0, 
+ startY : 290.0, 
+ endX : 660.0, 
+ endY : 160.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0eed2650_d0c29fe0'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 660.0, 
+ startY : 160.0, 
+ endX : 510.0, 
+ endY : 160.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab13__219e3784f285'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 660.0, 
+ startY : 290.0, 
+ endX : 510.0, 
+ endY : 290.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a00deaffe784401a08'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 550.0, 
+ startY : 160.0, 
+ endX : 550.0, 
+ endY : 120.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2543372898d_38748'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 700.0, 
+ startY : 120.0, 
+ endX : 550.0, 
+ endY : 120.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0f97c3_5f79e790_6'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 700.0, 
+ startY : 250.0, 
+ endX : 700.0, 
+ endY : 120.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2548a2d5a7e64_70_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 700.0, 
+ startY : 250.0, 
+ endX : 660.0, 
+ endY : 250.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a741_398883e15e4ae'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 595, 
+ y : 405, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad50090880_6e_4d08'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 560, 
+ y : 390, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = true;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+  id2figs['ad50090880_6e_4d08'].off('click tap');
+  id2figs['ad50090880_6e_4d08'].on('click tap', function() {   
+     r9player.showMessage( contentlay,  'ad50090880_6e_4d08',  normalizeString('Check the overlap pattern') , 900, 570, 4);  
+    if ( usetts   ){
+        var msg = new SpeechSynthesisUtterance(normalizeString('Check the overlap pattern'));
+       msg.lang = 'en-US'; 
+        window.speechSynthesis.speak(msg);
+     } 
+   } );  
+   id2figs['aaa9_74f_a98211f93'] = new   Kinetic.Sprite( { 
+animations : { idle: [ 0,0,60,6,60,0,60,6,120,0,60,6,180,0,60,6], punch: [ 0,0,60,6,60,0,60,6,120,0,60,6,180,0,60,6 ] }, 
+animation : 'idle', 
+image_src : h_flash_60.jpg, 
+image : h_flash_60, 
+frameIndex : 0, 
+frameRate : 5, 
+y : 210.0, 
+x : 570.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['aaa9_74f_a98211f93']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa594dba_1bc24_5ab'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 74, 
+fontSize : 12.13186813186813, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 168, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 9, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa8186_1c3ad6ad_ae'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 17.054945054945055, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 72, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 132, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7_3d59_537c2d3_73'],
+endX : 99.0, 
+endY : 149.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 99.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab4454dc55ba_8_73c'],
+endX : 100.0, 
+endY : 150.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 140.0, 
+startY : 150.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_3744_c49abbaca1b'],
+endX : 230.0, 
+endY : 240.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 230.0, 
+startY : 269.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a83b22a1735147521_'],
+endX : 100.0, 
+endY : 270.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 230.0, 
+startY : 270.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab96f7265bf_01b762'],
+endX : 140.0, 
+endY : 130.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 140.0, 
+startY : 240.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2244_e3519e24cd59'],
+endX : 140.0, 
+endY : 130.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 140.0, 
+startY : 240.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aad117a1754d83d8_1'],
+endX : 140.0, 
+endY : 130.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 140.0, 
+startY : 240.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aaf324ee92_49e6521'],
+endX : 260.0, 
+endY : 130.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 260.0, 
+startY : 240.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_f84ceac8e7ee4ede'],
+endX : 140.0, 
+endY : 240.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 260.0, 
+startY : 240.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a11fc4e1_5660ea445'],
+endX : 140.0, 
+endY : 130.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 260.0, 
+startY : 130.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7_55ebee005b2e01c'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 126, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 18, 
+y : 220, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 390, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a64f61b6d494d2108e'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 177, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 85, 
+y : 180, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 425, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4a380a833e14a799_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 165, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 99, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 380, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 190, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab2a2f36f_d2b6_d8_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 210, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 210, 
+y : 330, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 185, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a09_97bc47_d9dfd34'],
+strokeBlue : 1, 
+fillGreen : 12, 
+rotation : 40.13548555307535, 
+strokeGreen : 1, 
+opacity : 1.0, 
+radius : 66.70832032063167, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 207, 
+y : 390.0, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 400.0, 
+sides : 5, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0f6a_305f3fd95cfc'],
+strokeBlue : 1, 
+fillGreen : 133, 
+rotation : 39.50767543385179, 
+strokeGreen : 1, 
+opacity : 1.0, 
+radius : 73.87827826905551, 
+fillRed : 141, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 350.0, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 420.0, 
+sides : 5, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_21e22fee1e2de447'],
+endX : 510.0, 
+endY : 160.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 510.0, 
+startY : 290.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9__6bd64f4d1a6c58'],
+endX : 660.0, 
+endY : 160.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 660.0, 
+startY : 290.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0eed2650_d0c29fe0'],
+endX : 510.0, 
+endY : 160.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 660.0, 
+startY : 160.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab13__219e3784f285'],
+endX : 510.0, 
+endY : 290.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 660.0, 
+startY : 290.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a00deaffe784401a08'],
+endX : 550.0, 
+endY : 120.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 550.0, 
+startY : 160.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2543372898d_38748'],
+endX : 550.0, 
+endY : 120.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 700.0, 
+startY : 120.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0f97c3_5f79e790_6'],
+endX : 700.0, 
+endY : 120.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 700.0, 
+startY : 250.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2548a2d5a7e64_70_'],
+endX : 660.0, 
+endY : 250.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 700.0, 
+startY : 250.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a741_398883e15e4ae'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a741_398883e15e4ae'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad50090880_6e_4d08'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ad50090880_6e_4d08'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aaa9_74f_a98211f93'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 570.0, 
+ y : 210.0, 
+duration: 1
+  })  );
+id2figs['aaa9_74f_a98211f93'].start();
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a781_dd_0_47_afd55'] = new   Kinetic.R9Star( { 
+endX : 70.0, 
+endY : 146.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 130.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a781_dd_0_47_afd55']);  
+   id2figs['a7412f_8_feffb828f'] = new   Kinetic.R9Star( { 
+endX : 130.0, 
+endY : 210.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 130.0, 
+startY : 126.0, 
+strokeGreen : 227, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a7412f_8_feffb828f']);  
+   id2figs['a6583cd8c33d12_87b'] = new   Kinetic.R9Star( { 
+endX : 130.0, 
+endY : 220.0, 
+strokeBlue : 7, 
+headend : 0, 
+fillGreen : 99, 
+stroke : '#080808', 
+startX : 210.0, 
+startY : 160.0, 
+strokeGreen : 7, 
+fillAlpha : null, 
+fillRed : 225, 
+fillBlue : 0, 
+strokeRed : 7, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a6583cd8c33d12_87b']);  
+   id2figs['a5_0_b846c5b6059ac'] = new   Kinetic.R9Star( { 
+endX : 300.0, 
+endY : 136.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 300.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a5_0_b846c5b6059ac']);  
+   id2figs['a8_b5_2060_bf8_9b4'] = new   Kinetic.R9Star( { 
+endX : 300.0, 
+endY : 216.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 360.0, 
+startY : 166.0, 
+strokeGreen : 227, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a8_b5_2060_bf8_9b4']);  
+   id2figs['a8606d4f09b64_3280'] = new   Kinetic.R9Star( { 
+endX : 300.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a8606d4f09b64_3280']);  
+   id2figs['a5ac3c_f_3aeba95c9'] = new   Kinetic.R9Star( { 
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 540.0, 
+startY : 136.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a5ac3c_f_3aeba95c9']);  
+   id2figs['a__ad2_dddcc4d555c'] = new   Kinetic.R9Star( { 
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 540.0, 
+startY : 296.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a__ad2_dddcc4d555c']);  
+   id2figs['a74779f_9686f8bf68'] = new   Kinetic.R9Star( { 
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 570.0, 
+startY : 216.0, 
+strokeGreen : 227, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 3.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a74779f_9686f8bf68']);  
+   id2figs['aae9157_f2_7_894cd'] = new   Kinetic.R9Star( { 
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 220.0, 
+startY : 310.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['aae9157_f2_7_894cd']);  
+   id2figs['a_86__65_b5aba5ba6'] = new   Kinetic.R9Star( { 
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 100.0, 
+startY : 420.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_86__65_b5aba5ba6']);  
+   id2figs['a8b3b70a323a363382'] = new   Kinetic.R9Star( { 
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 200.0, 
+startY : 400.0, 
+strokeGreen : 227, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a8b3b70a323a363382']);  
+   id2figs['a26_2_435_90c2046_'] = new   Kinetic.R9Star( { 
+endX : 280.0, 
+endY : 300.0, 
+strokeBlue : 1, 
+headend : 1, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 300.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a26_2_435_90c2046_']);  
+   id2figs['af_8_13f1_2278f4__'] = new   Kinetic.R9Star( { 
+endX : 410.0, 
+endY : 300.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 410.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['af_8_13f1_2278f4__']);  
+   id2figs['a_542_74_164_2_218'] = new   Kinetic.R9Star( { 
+endX : 410.0, 
+endY : 300.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#84c600', 
+startX : 310.0, 
+startY : 400.0, 
+strokeGreen : 198, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 132, 
+strokeWidth : 4.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_542_74_164_2_218']);  
+   id2figs['ab8861_738e__62423'] = new   Kinetic.Ellipse( { 
+radius  : { x: 65.0 , y: 25.0}, 
+strokeBlue : 1, 
+fillGreen : 159, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 0, 
+fillAlpha : 0.5406593406593407, 
+fillBlue : 140, 
+y : 395, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 555, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ab8861_738e__62423']);  
+   id2figs['afbed34_f_f937874d'] = new   Kinetic.Text( { 
+text : normalizeString('Click Me!'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 380, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 520, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['afbed34_f_f937874d']);  
+  id2figs['afbed34_f_f937874d'].off('click tap');
+  id2figs['afbed34_f_f937874d'].on('click tap', function() {   
+     r9player.showMessage( contentlay,  'afbed34_f_f937874d',  normalizeString('Check the rotation of each figure') , 900, 570, 4);  
+    if ( usetts   ){
+        var msg = new SpeechSynthesisUtterance(normalizeString('Check the rotation of each figure'));
+       msg.lang = 'en-US'; 
+        window.speechSynthesis.speak(msg);
+     } 
+   } );  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa594dba_1bc24_5ab'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 74, 
+fontSize : 12.13186813186813, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 168, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 9, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa8186_1c3ad6ad_ae'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 17.054945054945055, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 72, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 132, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7_3d59_537c2d3_73'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a7_3d59_537c2d3_73'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab4454dc55ba_8_73c'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ab4454dc55ba_8_73c'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_3744_c49abbaca1b'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_3744_c49abbaca1b'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a83b22a1735147521_'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a83b22a1735147521_'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab96f7265bf_01b762'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ab96f7265bf_01b762'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2244_e3519e24cd59'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a2244_e3519e24cd59'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aad117a1754d83d8_1'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['aad117a1754d83d8_1'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aaf324ee92_49e6521'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['aaf324ee92_49e6521'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_f84ceac8e7ee4ede'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_f84ceac8e7ee4ede'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a11fc4e1_5660ea445'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a11fc4e1_5660ea445'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7_55ebee005b2e01c'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a7_55ebee005b2e01c'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a64f61b6d494d2108e'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a64f61b6d494d2108e'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4a380a833e14a799_'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a4a380a833e14a799_'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab2a2f36f_d2b6_d8_'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ab2a2f36f_d2b6_d8_'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a09_97bc47_d9dfd34'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a09_97bc47_d9dfd34'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0f6a_305f3fd95cfc'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a0f6a_305f3fd95cfc'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_21e22fee1e2de447'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_21e22fee1e2de447'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9__6bd64f4d1a6c58'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a9__6bd64f4d1a6c58'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0eed2650_d0c29fe0'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a0eed2650_d0c29fe0'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab13__219e3784f285'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ab13__219e3784f285'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a00deaffe784401a08'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a00deaffe784401a08'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2543372898d_38748'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a2543372898d_38748'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0f97c3_5f79e790_6'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a0f97c3_5f79e790_6'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2548a2d5a7e64_70_'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a2548a2d5a7e64_70_'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aaa9_74f_a98211f93'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['aaa9_74f_a98211f93'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a781_dd_0_47_afd55'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 130.0, 
+ startY : 216.0, 
+ endX : 70.0, 
+ endY : 146.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7412f_8_feffb828f'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 130.0, 
+ startY : 126.0, 
+ endX : 130.0, 
+ endY : 210.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6583cd8c33d12_87b'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 210.0, 
+ startY : 160.0, 
+ endX : 130.0, 
+ endY : 220.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5_0_b846c5b6059ac'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 300.0, 
+ startY : 216.0, 
+ endX : 300.0, 
+ endY : 136.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8_b5_2060_bf8_9b4'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 360.0, 
+ startY : 166.0, 
+ endX : 300.0, 
+ endY : 216.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8606d4f09b64_3280'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 410.0, 
+ startY : 216.0, 
+ endX : 300.0, 
+ endY : 216.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ac3c_f_3aeba95c9'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 540.0, 
+ startY : 136.0, 
+ endX : 460.0, 
+ endY : 216.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a__ad2_dddcc4d555c'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 540.0, 
+ startY : 296.0, 
+ endX : 460.0, 
+ endY : 216.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a74779f_9686f8bf68'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 570.0, 
+ startY : 216.0, 
+ endX : 460.0, 
+ endY : 216.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aae9157_f2_7_894cd'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 220.0, 
+ startY : 310.0, 
+ endX : 100.0, 
+ endY : 310.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_86__65_b5aba5ba6'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 100.0, 
+ startY : 420.0, 
+ endX : 100.0, 
+ endY : 310.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8b3b70a323a363382'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 200.0, 
+ startY : 400.0, 
+ endX : 100.0, 
+ endY : 310.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a26_2_435_90c2046_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 410.0, 
+ startY : 300.0, 
+ endX : 280.0, 
+ endY : 300.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af_8_13f1_2278f4__'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 410.0, 
+ startY : 410.0, 
+ endX : 410.0, 
+ endY : 300.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_542_74_164_2_218'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 310.0, 
+ startY : 400.0, 
+ endX : 410.0, 
+ endY : 300.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab8861_738e__62423'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 555, 
+ y : 395, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['afbed34_f_f937874d'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 520, 
+ y : 380, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = true;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+  id2figs['afbed34_f_f937874d'].off('click tap');
+  id2figs['afbed34_f_f937874d'].on('click tap', function() {   
+     r9player.showMessage( contentlay,  'afbed34_f_f937874d',  normalizeString('Check the rotation of each figure') , 900, 570, 4);  
+    if ( usetts   ){
+        var msg = new SpeechSynthesisUtterance(normalizeString('Check the rotation of each figure'));
+       msg.lang = 'en-US'; 
+        window.speechSynthesis.speak(msg);
+     } 
+   } );  
+   id2figs['a94f73d8cc_f36_27e'] = new   Kinetic.Sprite( { 
+animations : { idle: [ 0,0,65,6,65,0,65,6,130,0,65,6,195,0,65,6,260,0,65,6,325,0,65,6], punch: [ 0,0,65,6,65,0,65,6,130,0,65,6,195,0,65,6,260,0,65,6,325,0,65,6 ] }, 
+animation : 'idle', 
+image_src : h_spring_60.jpg, 
+image : h_spring_60, 
+frameIndex : 0, 
+frameRate : 5, 
+y : 156.0, 
+x : 225.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a94f73d8cc_f36_27e']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa594dba_1bc24_5ab'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 74, 
+fontSize : 12.13186813186813, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 168, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 9, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa8186_1c3ad6ad_ae'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 17.054945054945055, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 72, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 132, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a781_dd_0_47_afd55'],
+endX : 70.0, 
+endY : 146.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 130.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7412f_8_feffb828f'],
+endX : 130.0, 
+endY : 210.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 130.0, 
+startY : 126.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6583cd8c33d12_87b'],
+endX : 130.0, 
+endY : 220.0, 
+strokeBlue : 7, 
+headend : 0, 
+fillGreen : 99, 
+stroke : '#080808', 
+startX : 210.0, 
+startY : 160.0, 
+strokeGreen : 7, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 225, 
+fillBlue : 0, 
+strokeRed : 7, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5_0_b846c5b6059ac'],
+endX : 300.0, 
+endY : 136.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 300.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8_b5_2060_bf8_9b4'],
+endX : 300.0, 
+endY : 216.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 360.0, 
+startY : 166.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8606d4f09b64_3280'],
+endX : 300.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ac3c_f_3aeba95c9'],
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 540.0, 
+startY : 136.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a__ad2_dddcc4d555c'],
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 540.0, 
+startY : 296.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a74779f_9686f8bf68'],
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 570.0, 
+startY : 216.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 3.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aae9157_f2_7_894cd'],
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 220.0, 
+startY : 310.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_86__65_b5aba5ba6'],
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 100.0, 
+startY : 420.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8b3b70a323a363382'],
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 200.0, 
+startY : 400.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a26_2_435_90c2046_'],
+endX : 280.0, 
+endY : 300.0, 
+strokeBlue : 1, 
+headend : 1, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 300.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af_8_13f1_2278f4__'],
+endX : 410.0, 
+endY : 300.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 410.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_542_74_164_2_218'],
+endX : 410.0, 
+endY : 300.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#84c600', 
+startX : 310.0, 
+startY : 400.0, 
+strokeGreen : 198, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 132, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab8861_738e__62423'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ab8861_738e__62423'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['afbed34_f_f937874d'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['afbed34_f_f937874d'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f73d8cc_f36_27e'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 225.0, 
+ y : 156.0, 
+duration: 1
+  })  );
+id2figs['a94f73d8cc_f36_27e'].start();
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa594dba_1bc24_5ab'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 74, 
+fontSize : 12.13186813186813, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 168, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 9, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa8186_1c3ad6ad_ae'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 17.054945054945055, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 72, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 132, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a781_dd_0_47_afd55'],
+endX : 70.0, 
+endY : 146.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 130.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7412f_8_feffb828f'],
+endX : 130.0, 
+endY : 210.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 130.0, 
+startY : 126.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6583cd8c33d12_87b'],
+endX : 130.0, 
+endY : 220.0, 
+strokeBlue : 7, 
+headend : 0, 
+fillGreen : 99, 
+stroke : '#080808', 
+startX : 210.0, 
+startY : 160.0, 
+strokeGreen : 7, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 225, 
+fillBlue : 0, 
+strokeRed : 7, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5_0_b846c5b6059ac'],
+endX : 300.0, 
+endY : 136.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 300.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8_b5_2060_bf8_9b4'],
+endX : 300.0, 
+endY : 216.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 360.0, 
+startY : 166.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8606d4f09b64_3280'],
+endX : 300.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ac3c_f_3aeba95c9'],
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 540.0, 
+startY : 136.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a__ad2_dddcc4d555c'],
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 540.0, 
+startY : 296.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a74779f_9686f8bf68'],
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 570.0, 
+startY : 216.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 3.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aae9157_f2_7_894cd'],
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 220.0, 
+startY : 310.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_86__65_b5aba5ba6'],
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 100.0, 
+startY : 420.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8b3b70a323a363382'],
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 200.0, 
+startY : 400.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a26_2_435_90c2046_'],
+endX : 280.0, 
+endY : 300.0, 
+strokeBlue : 1, 
+headend : 1, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 300.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af_8_13f1_2278f4__'],
+endX : 410.0, 
+endY : 300.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 410.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_542_74_164_2_218'],
+endX : 410.0, 
+endY : 300.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#84c600', 
+startX : 310.0, 
+startY : 400.0, 
+strokeGreen : 198, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 132, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f73d8cc_f36_27e'],
+image_src : h_spring_60.jpg, 
+y : 170.0, 
+x : 400.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a03__2de37717a52d1'] = new   Kinetic.Sprite( { 
+animations : { idle: [ 0,0,45,45,45,0,45,45,90,0,45,45], punch: [ 0,0,45,45,45,0,45,45,90,0,45,45 ] }, 
+animation : 'idle', 
+image_src : spring_215d.jpg, 
+image : spring_215d, 
+frameIndex : 0, 
+frameRate : 5, 
+y : 300.0, 
+x : 440.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a03__2de37717a52d1']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa594dba_1bc24_5ab'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 74, 
+fontSize : 12.13186813186813, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 168, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 9, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa8186_1c3ad6ad_ae'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 17.054945054945055, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 72, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 132, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a781_dd_0_47_afd55'],
+endX : 70.0, 
+endY : 146.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 130.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7412f_8_feffb828f'],
+endX : 130.0, 
+endY : 210.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 130.0, 
+startY : 126.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6583cd8c33d12_87b'],
+endX : 130.0, 
+endY : 220.0, 
+strokeBlue : 7, 
+headend : 0, 
+fillGreen : 99, 
+stroke : '#080808', 
+startX : 210.0, 
+startY : 160.0, 
+strokeGreen : 7, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 225, 
+fillBlue : 0, 
+strokeRed : 7, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5_0_b846c5b6059ac'],
+endX : 300.0, 
+endY : 136.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 300.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8_b5_2060_bf8_9b4'],
+endX : 300.0, 
+endY : 216.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 360.0, 
+startY : 166.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8606d4f09b64_3280'],
+endX : 300.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ac3c_f_3aeba95c9'],
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 540.0, 
+startY : 136.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a__ad2_dddcc4d555c'],
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 540.0, 
+startY : 296.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a74779f_9686f8bf68'],
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 570.0, 
+startY : 216.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 3.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aae9157_f2_7_894cd'],
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 220.0, 
+startY : 310.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_86__65_b5aba5ba6'],
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 100.0, 
+startY : 420.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8b3b70a323a363382'],
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 200.0, 
+startY : 400.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a26_2_435_90c2046_'],
+endX : 280.0, 
+endY : 300.0, 
+strokeBlue : 1, 
+headend : 1, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 300.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af_8_13f1_2278f4__'],
+endX : 410.0, 
+endY : 300.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 410.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_542_74_164_2_218'],
+endX : 410.0, 
+endY : 300.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#84c600', 
+startX : 310.0, 
+startY : 400.0, 
+strokeGreen : 198, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 132, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f73d8cc_f36_27e'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a94f73d8cc_f36_27e'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a03__2de37717a52d1'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 440.0, 
+ y : 300.0, 
+duration: 1
+  })  );
+id2figs['a03__2de37717a52d1'].start();
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a__f30dab_a5_4ff43'] = new   Kinetic.Text( { 
+text : normalizeString('Rotation alone can not r9newlineachieve this figure'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 260, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 50, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a__f30dab_a5_4ff43']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa594dba_1bc24_5ab'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 74, 
+fontSize : 12.13186813186813, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 168, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 9, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa8186_1c3ad6ad_ae'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 17.054945054945055, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 72, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 132, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a781_dd_0_47_afd55'],
+endX : 70.0, 
+endY : 146.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 130.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7412f_8_feffb828f'],
+endX : 130.0, 
+endY : 210.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 130.0, 
+startY : 126.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6583cd8c33d12_87b'],
+endX : 130.0, 
+endY : 220.0, 
+strokeBlue : 7, 
+headend : 0, 
+fillGreen : 99, 
+stroke : '#080808', 
+startX : 210.0, 
+startY : 160.0, 
+strokeGreen : 7, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 225, 
+fillBlue : 0, 
+strokeRed : 7, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5_0_b846c5b6059ac'],
+endX : 300.0, 
+endY : 136.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 300.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8_b5_2060_bf8_9b4'],
+endX : 300.0, 
+endY : 216.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 360.0, 
+startY : 166.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8606d4f09b64_3280'],
+endX : 300.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 216.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ac3c_f_3aeba95c9'],
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 540.0, 
+startY : 136.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a__ad2_dddcc4d555c'],
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 540.0, 
+startY : 296.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a74779f_9686f8bf68'],
+endX : 460.0, 
+endY : 216.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 570.0, 
+startY : 216.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 3.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aae9157_f2_7_894cd'],
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 220.0, 
+startY : 310.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_86__65_b5aba5ba6'],
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 100.0, 
+startY : 420.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8b3b70a323a363382'],
+endX : 100.0, 
+endY : 310.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#71e300', 
+startX : 200.0, 
+startY : 400.0, 
+strokeGreen : 227, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 113, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a26_2_435_90c2046_'],
+endX : 280.0, 
+endY : 300.0, 
+strokeBlue : 1, 
+headend : 1, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 300.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af_8_13f1_2278f4__'],
+endX : 410.0, 
+endY : 300.0, 
+strokeBlue : 1, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 410.0, 
+startY : 410.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_542_74_164_2_218'],
+endX : 410.0, 
+endY : 300.0, 
+strokeBlue : 0, 
+headend : 3, 
+fillGreen : 1, 
+stroke : '#84c600', 
+startX : 310.0, 
+startY : 400.0, 
+strokeGreen : 198, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 132, 
+strokeWidth : 4.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a03__2de37717a52d1'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a03__2de37717a52d1'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a__f30dab_a5_4ff43'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 50, 
+ y : 260, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+  transpages[0].setup();  layer.batchDraw(); contentlay.batchDraw();
+	    r9player = new R9TransitionChainHandler();
+	    for(var i = 0; i< transpages.length;  i++ )
+	      r9player.add( transpages[i], transpages[i].beforeTransition, transpages[i].transitionDuration ); 
+	   r9player.start();
+ } 
+  var onMessage =  function(subject, eventDataObject, subscriberData){
+ 		if ( subject == 'r9.core.animation.resume'){
+ 			 r9player.resume(); 
+ 			return;
+ 		}
+ 		if ( subject == 'r9.core.animation.stop'){
+ 		 if ( r9player.isRunning  ){ 
+ 	    r9playbutton .moveToTop();  
+ 	    r9player.stop();   
+ 	         layer.draw();   
+ 	 } 
+ 			return;
+ 		} 
+ }
+  window.PageBus.subscribe('r9.core.animation.resume', this,  onMessage, null);
+  window.PageBus.subscribe('r9.core.animation.stop', this,  onMessage, null);
+  </script> </body>  </html>

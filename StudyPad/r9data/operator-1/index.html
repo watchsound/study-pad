@@ -1,0 +1,5616 @@
+ <!DOCTYPE HTML> 
+ <html>
+ <head> <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"> 
+ <style>
+  body {
+   margin: 0px;
+   padding: 0px;
+  }
+ </style>
+ </head>
+ <body>
+ <div id="container" style="position: absolute;
+		    height: 580px;
+		    width: 850px;
+		    margin: -290px 0 0 -425px;
+		    top: 50%;
+		    left: 50%;"></div>  
+   <script src="kinetic-v5.0.2.min.js"></script>
+ <script src="pagebus.js"></script>
+  <script src="r9geom_core.js"></script>
+  <script src="r9geom_main.js"></script>
+   <script src="r9geom.js"></script>
+  <script>
+    var stage = new Kinetic.Stage({
+    container: 'container',
+    width: 850  ,
+    height: 580  
+   });
+   var layer = new Kinetic.Layer();
+   stage.add(layer);
+  var id2figs = {};
+  var transpages = [];  var  r9player ; var contentlay ; 
+  var usetts = 'speechSynthesis' in window; 
+var newimages=[], loadedimages=0;
+  	var r9playbutton = new Kinetic.Label({ 
+        x: 40, 
+        y: stage.getHeight(), 
+     opacity: 0.75 
+   }); 
+   r9playbutton.add(new Kinetic.Tag({ 
+       fill: 'black', 
+       pointerDirection: 'down', 
+      pointerWidth: 10, 
+      pointerHeight: 10, 
+      lineJoin: 'round', 
+     shadowColor: 'black', 
+      shadowBlur: 10, 
+         shadowOffset: {x:5,y:10}, 
+     shadowOpacity: 0.5 
+    }));  
+   r9playbutton.add(new Kinetic.Text({   
+        text: 'Start',  
+       fontFamily: 'Calibri',  
+      fontSize: 18,  
+        padding: 5,  
+        fill: 'white' 
+     }));  
+     r9playbutton.on('tap', function() { 
+     if (! r9player.isRunning  ){  
+         r9playbutton2.moveToTop(); 
+         r9player.start(); 
+  		    layer.draw();  
+  	  }
+      }); 
+      r9playbutton.on('click', function() {  
+          if (! r9player.isRunning  ){   
+         r9playbutton2.moveToTop();  
+         r9player.start();  
+  	    layer.draw();   
+    } 
+    });  
+     r9playbutton.on('mousedown touchstart', function() {  
+           r9playbutton.setOpacity( 0.25  );  
+  		   layer.draw();   
+        });  
+        r9playbutton.on('mouseup touchend', function() {  
+            r9playbutton.setOpacity( 0.75  );  
+   		   layer.draw();  
+       });  
+   	  r9playbutton.on('mouseover', function () {   
+                document.body.style.cursor = 'pointer';   
+          });   
+          r9playbutton.on('mouseout', function () {   
+                   document.body.style.cursor = 'default';   
+          });   
+       layer.add(	r9playbutton );  
+    	 var r9playbutton2 = new Kinetic.Label({  
+        x: 40,  
+           y: stage.getHeight(),  
+        opacity: 0.75  
+       });  
+       r9playbutton2.add(new Kinetic.Tag({  
+       fill: 'black',  
+        pointerDirection: 'down',  
+     pointerWidth: 10,  
+        pointerHeight: 10,  
+         lineJoin: 'round',  
+          shadowColor: 'black',  
+          shadowBlur: 10,  
+             shadowOffset: {x:5,y:10},  
+          shadowOpacity: 0.5  
+          }));   
+        r9playbutton2.add(new Kinetic.Text({    
+           text: 'Stop',   
+          fontFamily: 'Calibri',   
+         fontSize: 18,   
+           padding: 5,   
+          fill: 'white'   
+          }));   
+         r9playbutton2.on('tap', function() {  
+   	      if ( r9player.isRunning  ){ 
+  			   r9playbutton .moveToTop();  
+  	       r9player.stop();   
+  		    layer.draw();   
+  	  }  
+        });  
+   	    r9playbutton2.on('click', function() {  
+             if ( r9player.isRunning  ){ 
+     r9playbutton .moveToTop();  
+        r9player.stop();   
+  	    layer.draw();   
+    }  
+   });  
+     r9playbutton2.on('mousedown touchstart', function() {  
+            r9playbutton2.setOpacity( 0.25  );  
+   		   layer.draw();   
+         });  
+          r9playbutton2.on('mouseup touchend', function() {  
+           r9playbutton2.setOpacity( 0.75  );  
+    		   layer.draw();  
+         });  
+     	  r9playbutton2.on('mouseover', function () {   
+                   document.body.style.cursor = 'pointer';   
+           });   
+          r9playbutton2.on('mouseout', function () {   
+                   document.body.style.cursor = 'default';   
+            });   
+        layer.add(	r9playbutton2 );  
+   var r9restartbutton = new Kinetic.Label({ 
+     x:  stage.getWidth()  -40, 
+    y: stage.getHeight()  , 
+    opacity: 0.75 
+ }); 
+  r9restartbutton.add(new Kinetic.Tag({ 
+   fill: 'black', 
+   pointerDirection: 'down',
+   pointerWidth: 10, 
+    pointerHeight: 10, 
+    lineJoin: 'round', 
+    shadowColor: 'black', 
+    shadowBlur: 10, 
+       shadowOffset: {x:5,y:10}, 
+   shadowOpacity: 0.5 
+  })); 
+  r9restartbutton.add(new Kinetic.Text({   
+       text: 'Reload',  
+      fontFamily: 'Calibri',  
+     fontSize: 18,  
+       padding: 5,  
+      fill: 'white'  
+     }));  
+     r9restartbutton.on('tap', function() { 
+          setupscreen(); 
+    }); 
+ 	    r9restartbutton.on('click', function() { 
+          setupscreen();  
+  }); 
+   r9restartbutton.on('mousedown touchstart', function() { 
+           r9restartbutton.setOpacity( 0.25  ); 
+ 		   layer.draw();  
+       }); 
+      r9restartbutton.on('mouseup touchend', function() { 
+         r9restartbutton.setOpacity( 0.75  ); 
+ 		   layer.draw(); 
+     }); 
+ 	  r9restartbutton.on('mouseover', function () {  
+             document.body.style.cursor = 'pointer';  
+          });  
+     r9restartbutton.on('mouseout', function () {  
+              document.body.style.cursor = 'default';  
+        });  
+    layer.add(	r9restartbutton ); 
+var butterfly_1 = new Image();
+newimages.push( butterfly_1  );
+var a66e74ee4f = new Image();
+newimages.push( a66e74ee4f  );
+var a4b735_557 = new Image();
+newimages.push( a4b735_557  );
+var ae_3b4a4__ = new Image();
+newimages.push( ae_3b4a4__  );
+var ae22f2_ac4 = new Image();
+newimages.push( ae22f2_ac4  );
+var aa6d1d77e0 = new Image();
+newimages.push( aa6d1d77e0  );
+var a3_dafefec = new Image();
+newimages.push( a3_dafefec  );
+var ae3ac549aa = new Image();
+newimages.push( ae3ac549aa  );
+var a0b_7c84_0 = new Image();
+newimages.push( a0b_7c84_0  );
+var a2_f9be48b = new Image();
+newimages.push( a2_f9be48b  );
+var a633c5_e90 = new Image();
+newimages.push( a633c5_e90  );
+var ac0b_500a3 = new Image();
+newimages.push( ac0b_500a3  );
+var a6_1eb692c = new Image();
+newimages.push( a6_1eb692c  );
+var a799454_96 = new Image();
+newimages.push( a799454_96  );
+var abb8d97d95 = new Image();
+newimages.push( abb8d97d95  );
+var a8fc_7_0e1 = new Image();
+newimages.push( a8fc_7_0e1  );
+ for (var i=0; i<newimages.length; i++){ 
+     newimages[i].onload=function(){
+  imageloadpost() 
+   } 
+  newimages[i].onerror=function(){ 
+    imageloadpost() 
+      }  
+ } 
+  function imageloadpost(){ 
+  loadedimages++; 
+  if (loadedimages==newimages.length)  
+      setupscreen(); 
+  } 
+a4b735_557.src = 'a4b735_557.jpg'
+a633c5_e90.src = 'a633c5_e90.jpg'
+ae22f2_ac4.src = 'ae22f2_ac4.jpg'
+a6_1eb692c.src = 'a6_1eb692c.jpg'
+aa6d1d77e0.src = 'aa6d1d77e0.jpg'
+a66e74ee4f.src = 'a66e74ee4f.jpg'
+abb8d97d95.src = 'abb8d97d95.jpg'
+a2_f9be48b.src = 'a2_f9be48b.jpg'
+butterfly_1.src = 'butterfly_1.jpg'
+a799454_96.src = 'a799454_96.jpg'
+a8fc_7_0e1.src = 'a8fc_7_0e1.jpg'
+ae3ac549aa.src = 'ae3ac549aa.jpg'
+a0b_7c84_0.src = 'a0b_7c84_0.jpg'
+ae_3b4a4__.src = 'ae_3b4a4__.jpg'
+a3_dafefec.src = 'a3_dafefec.jpg'
+ac0b_500a3.src = 'ac0b_500a3.jpg'
+ function setupscreen() {
+     if ( r9player ){
+ 	    r9player.distroy();
+ 	}
+ 	   if ( contentlay ) {
+ 	      contentlay.destroy();
+ 		  id2figs = {};
+ 		  transpages = []; 
+ 	  }
+ 	  contentlay = new Kinetic.Layer();  
+   stage.add(contentlay);  layer.moveToTop(); 
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a5555_6ac5a4f3b_5b'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 237, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 215, 
+y : 121, 
+fontSize : 37.8021978021978, 
+strokeGreen : 1, 
+text : normalizeString('Define New Operator'), 
+opacity : 1.0, 
+fillBlue : 43, 
+  }); 
+ contentlay.add(id2figs['a5555_6ac5a4f3b_5b']);  
+   id2figs['a6_d02_d0613_7bae_'] = new   Kinetic.Sprite( { 
+frameRate : 5, 
+image : butterfly_1, 
+frameIndex : 0, 
+animations : { idle: [ 0,0,385,315,385,0,385,315,770,0,385,315,1155,0,385,315,1540,0,385,315,1925,0,385,315,2310,0,385,315,2695,0,385,315,3080,0,385,315,3465,0,173,93,3638,0,385,315,4023,0,385,315,4408,0,385,315,4793,0,385,315,5178,0,385,315,5563,0,385,315,5948,0,385,315,6333,0,385,315,6718,0,385,315,7103,0,385,315,7488,0,385,315,7873,0,385,315,8258,0,385,315,8643,0,385,315,9028,0,385,315,9413,0,158,314,9571,0,385,315,9956,0,385,315,10341,0,385,315,10726,0,385,315,11111,0,385,315,11496,0,385,315,11881,0,94,188,11975,0,385,315,12360,0,385,315,12745,0,385,315,13130,0,385,315,13515,0,385,315,13900,0,385,315,14285,0,385,315,14670,0,385,315,15055,0,385,315,15440,0,385,315,15825,0,385,315,16210,0,385,315,16595,0,385,315,16980,0,385,315,17365,0,385,315,17750,0,385,315,18135,0,385,315,18520,0,385,315,18905,0,385,315,19290,0,385,315], punch: [ 0,0,385,315,385,0,385,315,770,0,385,315,1155,0,385,315,1540,0,385,315,1925,0,385,315,2310,0,385,315,2695,0,385,315,3080,0,385,315,3465,0,173,93,3638,0,385,315,4023,0,385,315,4408,0,385,315,4793,0,385,315,5178,0,385,315,5563,0,385,315,5948,0,385,315,6333,0,385,315,6718,0,385,315,7103,0,385,315,7488,0,385,315,7873,0,385,315,8258,0,385,315,8643,0,385,315,9028,0,385,315,9413,0,158,314,9571,0,385,315,9956,0,385,315,10341,0,385,315,10726,0,385,315,11111,0,385,315,11496,0,385,315,11881,0,94,188,11975,0,385,315,12360,0,385,315,12745,0,385,315,13130,0,385,315,13515,0,385,315,13900,0,385,315,14285,0,385,315,14670,0,385,315,15055,0,385,315,15440,0,385,315,15825,0,385,315,16210,0,385,315,16595,0,385,315,16980,0,385,315,17365,0,385,315,17750,0,385,315,18135,0,385,315,18520,0,385,315,18905,0,385,315,19290,0,385,315 ] }, 
+x : 462.0, 
+y : 248.0, 
+image_src : butterfly_1.jpg, 
+animation : 'idle', 
+  }); 
+ contentlay.add(id2figs['a6_d02_d0613_7bae_']);  
+   id2figs['a_a54057_5f_755_e_'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 44, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 79, 
+y : 122, 
+fontSize : 19.516483516483518, 
+strokeGreen : 1, 
+text : normalizeString('We have learning four operations: plus(+), minus(-), times(*) and division(/)'), 
+fillBlue : 168, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_a54057_5f_755_e_']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5555_6ac5a4f3b_5b'],
+strokeWidth : 1.0, 
+fillRed : 237, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 10, 
+y : 2, 
+fontSize : 19.164835164835164, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 43, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a54057_5f_755_e_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 79, 
+ y : 122, 
+duration: 1
+  })  );
+id2figs['a6_d02_d0613_7bae_'].start();
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a2b7_7b7a41a041_7f'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 95, 
+fillGreen : 144, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 91, 
+y : 170, 
+fontSize : 19.86813186813187, 
+strokeGreen : 1, 
+text : normalizeString('Today we will explore how to define new operations'), 
+fillBlue : 0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a2b7_7b7a41a041_7f']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5555_6ac5a4f3b_5b'],
+strokeWidth : 1.0, 
+fillRed : 237, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 10, 
+y : 2, 
+fontSize : 19.164835164835164, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 43, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a54057_5f_755_e_'],
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 44, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 79, 
+y : 122, 
+fontSize : 19.516483516483518, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 168, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2b7_7b7a41a041_7f'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 91, 
+ y : 170, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['ae022e4d5c2__7b0b7'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 99, 
+y : 225, 
+fontSize : 20.57142857142857, 
+strokeGreen : 1, 
+text : normalizeString('Letr9apostrophes start with some examples'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ae022e4d5c2__7b0b7']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5555_6ac5a4f3b_5b'],
+strokeWidth : 1.0, 
+fillRed : 237, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 10, 
+y : 2, 
+fontSize : 19.164835164835164, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 43, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a54057_5f_755_e_'],
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 44, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 79, 
+y : 122, 
+fontSize : 19.516483516483518, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 168, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2b7_7b7a41a041_7f'],
+strokeWidth : 1.0, 
+fillRed : 95, 
+fillGreen : 144, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 91, 
+y : 170, 
+fontSize : 19.86813186813187, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ae022e4d5c2__7b0b7'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 99, 
+ y : 225, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['aa156feff__e518cfe'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 87, 
+y : 161, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('If'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['aa156feff__e518cfe']);  
+   id2figs['a80_ec8_3db5_4_df_'] = new   Kinetic.Image( { 
+image : a66e74ee4f, 
+x : 117.0, 
+width : 14.0, 
+y : 159.0, 
+image_src : a66e74ee4f.jpg, 
+height : 23.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a80_ec8_3db5_4_df_']);  
+   id2figs['a0c03c4_a646c_c890'] = new   Kinetic.Image( { 
+image : a4b735_557, 
+x : 146.0, 
+width : 14.0, 
+y : 159.0, 
+image_src : a4b735_557.jpg, 
+height : 23.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a0c03c4_a646c_c890']);  
+   id2figs['ab772_ba3d_ab_ea__'] = new   Kinetic.Image( { 
+image : ae_3b4a4__, 
+x : 161.0, 
+width : 13.0, 
+y : 161.0, 
+image_src : ae_3b4a4__.jpg, 
+height : 20.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ab772_ba3d_ab_ea__']);  
+   id2figs['abd511e_9599_21b59'] = new   Kinetic.Image( { 
+image : ae22f2_ac4, 
+x : 175.0, 
+width : 51.0, 
+y : 165.0, 
+image_src : ae22f2_ac4.jpg, 
+height : 12.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['abd511e_9599_21b59']);  
+   id2figs['a96184__31b4383113'] = new   Kinetic.Image( { 
+image : aa6d1d77e0, 
+x : 193.0, 
+width : 14.0, 
+y : 177.0, 
+image_src : aa6d1d77e0.jpg, 
+height : 23.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a96184__31b4383113']);  
+   id2figs['ab_e8_a_a6856b_6_b'] = new   Kinetic.Image( { 
+image : a3_dafefec, 
+x : 180.0, 
+width : 14.0, 
+y : 142.0, 
+image_src : a3_dafefec.jpg, 
+height : 23.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ab_e8_a_a6856b_6_b']);  
+   id2figs['a883df_1f3115_24e3'] = new   Kinetic.Image( { 
+image : ae3ac549aa, 
+x : 194.0, 
+width : 13.0, 
+y : 143.0, 
+image_src : ae3ac549aa.jpg, 
+height : 20.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a883df_1f3115_24e3']);  
+   id2figs['ab4ffeee8_397be98_'] = new   Kinetic.Image( { 
+image : a0b_7c84_0, 
+x : 207.0, 
+width : 14.0, 
+y : 142.0, 
+image_src : a0b_7c84_0.jpg, 
+height : 23.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ab4ffeee8_397be98_']);  
+   id2figs['a09728ad408fa8_7a7'] = new   Kinetic.RegularPolygon( { 
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 137.0, 
+y : 172.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+fillBlue : 0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a09728ad408fa8_7a7']);  
+   id2figs['ac338_48_be0e_c_4d'] = new   Kinetic.RegularPolygon( { 
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 298.0, 
+y : 173.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+fillBlue : 0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ac338_48_be0e_c_4d']);  
+   id2figs['acfaccb_8334ae_fa7'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 316, 
+y : 163, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('represents the new operation we defined.'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['acfaccb_8334ae_fa7']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5555_6ac5a4f3b_5b'],
+strokeWidth : 1.0, 
+fillRed : 237, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 10, 
+y : 2, 
+fontSize : 19.164835164835164, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 43, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a54057_5f_755_e_'],
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 44, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 82, 
+y : 28, 
+fontSize : 19.516483516483518, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 168, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2b7_7b7a41a041_7f'],
+strokeWidth : 1.0, 
+fillRed : 95, 
+fillGreen : 144, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 80, 
+y : 52, 
+fontSize : 19.86813186813187, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ae022e4d5c2__7b0b7'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ae022e4d5c2__7b0b7'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa156feff__e518cfe'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 87, 
+ y : 161, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a80_ec8_3db5_4_df_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 117.0, 
+ y : 159.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0c03c4_a646c_c890'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 146.0, 
+ y : 159.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab772_ba3d_ab_ea__'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 161.0, 
+ y : 161.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['abd511e_9599_21b59'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 175.0, 
+ y : 165.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a96184__31b4383113'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 193.0, 
+ y : 177.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab_e8_a_a6856b_6_b'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 180.0, 
+ y : 142.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a883df_1f3115_24e3'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 194.0, 
+ y : 143.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab4ffeee8_397be98_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 207.0, 
+ y : 142.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a09728ad408fa8_7a7'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 137.0, 
+ y : 172.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac338_48_be0e_c_4d'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 298.0, 
+ y : 173.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['acfaccb_8334ae_fa7'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 316, 
+ y : 163, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a_5aa5343065c905b5'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 281, 
+y : 205, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('Sum up values left and right of'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_5aa5343065c905b5']);  
+   id2figs['a358_85_8c_59_83da'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 594, 
+y : 204, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('then divided by 2'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a358_85_8c_59_83da']);  
+   id2figs['a42_14b44442_42092'] = new   Kinetic.RegularPolygon( { 
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 298.0, 
+y : 173.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+fillBlue : 0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a42_14b44442_42092']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5555_6ac5a4f3b_5b'],
+strokeWidth : 1.0, 
+fillRed : 237, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 10, 
+y : 2, 
+fontSize : 19.164835164835164, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 43, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a54057_5f_755_e_'],
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 44, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 82, 
+y : 28, 
+fontSize : 19.516483516483518, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 168, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2b7_7b7a41a041_7f'],
+strokeWidth : 1.0, 
+fillRed : 95, 
+fillGreen : 144, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 80, 
+y : 52, 
+fontSize : 19.86813186813187, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa156feff__e518cfe'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 87, 
+y : 161, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a09728ad408fa8_7a7'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 137.0, 
+y : 172.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac338_48_be0e_c_4d'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 298.0, 
+y : 173.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['acfaccb_8334ae_fa7'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 316, 
+y : 163, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_5aa5343065c905b5'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 281, 
+ y : 205, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a358_85_8c_59_83da'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 594, 
+ y : 204, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a42_14b44442_42092'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 539.0, 
+ y : 216.0, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a4_7d7e_a9363141a7'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 249, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 85, 
+y : 270, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('Question :'), 
+fillBlue : 60, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a4_7d7e_a9363141a7']);  
+   id2figs['ac_52__79259d9b32e'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 129, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('2'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ac_52__79259d9b32e']);  
+   id2figs['ae69_7493a6_e7f433'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 161, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString(''), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ae69_7493a6_e7f433']);  
+   id2figs['ad49_9_529fbc748_c'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 171, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('8'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ad49_9_529fbc748_c']);  
+   id2figs['a7a11e4d4479_18127'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 186, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString(''), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a7a11e4d4479_18127']);  
+   id2figs['a4d2302__59e_7ffb0'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 196, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('='), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a4d2302__59e_7ffb0']);  
+   id2figs['a86455a47_e4_46f59'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 214, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString(''), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a86455a47_e4_46f59']);  
+   id2figs['aeeaa8edf2e259be4e'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 224, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('?'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['aeeaa8edf2e259be4e']);  
+   id2figs['a87fb9f57_9__8b050'] = new   Kinetic.RegularPolygon( { 
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 137.0, 
+y : 172.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+fillBlue : 0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a87fb9f57_9__8b050']);  
+   id2figs['a1781ee7_84852be_0'] = new   Kinetic.Ellipse( { 
+strokeWidth : 1.0, 
+fillRed : 99, 
+fillGreen : 12, 
+fillAlpha : 0.2681318681318681, 
+strokeBlue : 1, 
+strokeRed : 1, 
+radius  : { x: 32.0 , y: 18.0}, 
+draggable : false, 
+x : 341, 
+y : 400, 
+strokeGreen : 1, 
+shadowEnabled : false, 
+fillBlue : 255, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a1781ee7_84852be_0']);  
+   id2figs['a9909aa_83a8aaaff5'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 132, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 326, 
+y : 390, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('Next'), 
+fillBlue : 11, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a9909aa_83a8aaaff5']);  
+  id2figs['a9909aa_83a8aaaff5'].off('click tap');
+  id2figs['a9909aa_83a8aaaff5'].on('click tap', function() {   
+     r9player.resume( ); }); 
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5555_6ac5a4f3b_5b'],
+strokeWidth : 1.0, 
+fillRed : 237, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 10, 
+y : 2, 
+fontSize : 19.164835164835164, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 43, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a54057_5f_755_e_'],
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 44, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 82, 
+y : 28, 
+fontSize : 19.516483516483518, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 168, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2b7_7b7a41a041_7f'],
+strokeWidth : 1.0, 
+fillRed : 95, 
+fillGreen : 144, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 80, 
+y : 52, 
+fontSize : 19.86813186813187, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa156feff__e518cfe'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 87, 
+y : 161, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a09728ad408fa8_7a7'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 137.0, 
+y : 172.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac338_48_be0e_c_4d'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 298.0, 
+y : 173.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['acfaccb_8334ae_fa7'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 316, 
+y : 163, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_5aa5343065c905b5'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 281, 
+y : 205, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a358_85_8c_59_83da'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 556, 
+y : 206, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a42_14b44442_42092'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 536.0, 
+y : 216.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4_7d7e_a9363141a7'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 85, 
+ y : 270, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac_52__79259d9b32e'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 129, 
+ y : 304, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ae69_7493a6_e7f433'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 161, 
+ y : 304, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad49_9_529fbc748_c'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 171, 
+ y : 304, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7a11e4d4479_18127'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 186, 
+ y : 304, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4d2302__59e_7ffb0'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 196, 
+ y : 304, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a86455a47_e4_46f59'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 214, 
+ y : 304, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aeeaa8edf2e259be4e'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 224, 
+ y : 304, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a87fb9f57_9__8b050'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 156.0, 
+ y : 314.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1781ee7_84852be_0'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 341, 
+ y : 400, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9909aa_83a8aaaff5'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 326, 
+ y : 390, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = true;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+  id2figs['a9909aa_83a8aaaff5'].off('click tap');
+  id2figs['a9909aa_83a8aaaff5'].on('click tap', function() {   
+     r9player.resume( ); }); 
+   id2figs['a96a41e417897a8c97'] = new   Kinetic.Image( { 
+image : a66e74ee4f, 
+x : 117.0, 
+width : 14.0, 
+y : 159.0, 
+image_src : a66e74ee4f.jpg, 
+height : 23.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a96a41e417897a8c97']);  
+   id2figs['a5a6b266b855_5799a'] = new   Kinetic.Image( { 
+image : a4b735_557, 
+x : 146.0, 
+width : 14.0, 
+y : 159.0, 
+image_src : a4b735_557.jpg, 
+height : 23.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a5a6b266b855_5799a']);  
+   id2figs['a26_ce161_a9991e92'] = new   Kinetic.Image( { 
+image : ae_3b4a4__, 
+x : 161.0, 
+width : 13.0, 
+y : 161.0, 
+image_src : ae_3b4a4__.jpg, 
+height : 20.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a26_ce161_a9991e92']);  
+   id2figs['ada1___da31ae6e0d7'] = new   Kinetic.Image( { 
+image : ae22f2_ac4, 
+x : 175.0, 
+width : 51.0, 
+y : 165.0, 
+image_src : ae22f2_ac4.jpg, 
+height : 12.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ada1___da31ae6e0d7']);  
+   id2figs['a_9a9b2b43a9b4_7f1'] = new   Kinetic.Image( { 
+image : aa6d1d77e0, 
+x : 193.0, 
+width : 14.0, 
+y : 177.0, 
+image_src : aa6d1d77e0.jpg, 
+height : 23.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_9a9b2b43a9b4_7f1']);  
+   id2figs['ae69de2e2ee97729__'] = new   Kinetic.Image( { 
+image : a3_dafefec, 
+x : 180.0, 
+width : 14.0, 
+y : 142.0, 
+image_src : a3_dafefec.jpg, 
+height : 23.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ae69de2e2ee97729__']);  
+   id2figs['a11_eaef_1a__e458a'] = new   Kinetic.Image( { 
+image : ae3ac549aa, 
+x : 194.0, 
+width : 13.0, 
+y : 143.0, 
+image_src : ae3ac549aa.jpg, 
+height : 20.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a11_eaef_1a__e458a']);  
+   id2figs['a_842b20c_f8004_a8'] = new   Kinetic.Image( { 
+image : a0b_7c84_0, 
+x : 207.0, 
+width : 14.0, 
+y : 142.0, 
+image_src : a0b_7c84_0.jpg, 
+height : 23.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_842b20c_f8004_a8']);  
+   id2figs['a3559a5d_c733720db'] = new   Kinetic.RegularPolygon( { 
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 137.0, 
+y : 172.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+fillBlue : 0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a3559a5d_c733720db']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5555_6ac5a4f3b_5b'],
+strokeWidth : 1.0, 
+fillRed : 237, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 10, 
+y : 2, 
+fontSize : 19.164835164835164, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 43, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a54057_5f_755_e_'],
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 44, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 82, 
+y : 28, 
+fontSize : 19.516483516483518, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 168, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2b7_7b7a41a041_7f'],
+strokeWidth : 1.0, 
+fillRed : 95, 
+fillGreen : 144, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 80, 
+y : 52, 
+fontSize : 19.86813186813187, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa156feff__e518cfe'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 87, 
+y : 161, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a09728ad408fa8_7a7'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 137.0, 
+y : 172.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac338_48_be0e_c_4d'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 298.0, 
+y : 173.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['acfaccb_8334ae_fa7'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 316, 
+y : 163, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_5aa5343065c905b5'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 281, 
+y : 205, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a42_14b44442_42092'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 539.0, 
+y : 216.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4_7d7e_a9363141a7'],
+strokeWidth : 1.0, 
+fillRed : 249, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 85, 
+y : 270, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 60, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac_52__79259d9b32e'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 129, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ae69_7493a6_e7f433'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 161, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad49_9_529fbc748_c'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 171, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7a11e4d4479_18127'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 186, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4d2302__59e_7ffb0'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 196, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a86455a47_e4_46f59'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 214, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aeeaa8edf2e259be4e'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 224, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a87fb9f57_9__8b050'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 156.0, 
+y : 314.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1781ee7_84852be_0'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a1781ee7_84852be_0'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9909aa_83a8aaaff5'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a9909aa_83a8aaaff5'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a358_85_8c_59_83da'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 594, 
+y : 204, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a96a41e417897a8c97'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 126.0, 
+ y : 353.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5a6b266b855_5799a'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 155.0, 
+ y : 353.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a26_ce161_a9991e92'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 170.0, 
+ y : 355.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ada1___da31ae6e0d7'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 184.0, 
+ y : 359.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_9a9b2b43a9b4_7f1'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 202.0, 
+ y : 371.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ae69de2e2ee97729__'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 189.0, 
+ y : 336.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a11_eaef_1a__e458a'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 203.0, 
+ y : 337.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_842b20c_f8004_a8'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 216.0, 
+ y : 336.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3559a5d_c733720db'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 146.0, 
+ y : 366.0, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a8250a5325485f_b53'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 129, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('2'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a8250a5325485f_b53']);  
+   id2figs['af0_2f2_8aa_825a4b'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 171, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('8'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['af0_2f2_8aa_825a4b']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5555_6ac5a4f3b_5b'],
+strokeWidth : 1.0, 
+fillRed : 237, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 10, 
+y : 2, 
+fontSize : 19.164835164835164, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 43, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a54057_5f_755_e_'],
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 44, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 82, 
+y : 28, 
+fontSize : 19.516483516483518, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 168, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2b7_7b7a41a041_7f'],
+strokeWidth : 1.0, 
+fillRed : 95, 
+fillGreen : 144, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 80, 
+y : 52, 
+fontSize : 19.86813186813187, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa156feff__e518cfe'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 87, 
+y : 161, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a09728ad408fa8_7a7'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 137.0, 
+y : 172.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac338_48_be0e_c_4d'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 298.0, 
+y : 173.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['acfaccb_8334ae_fa7'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 316, 
+y : 163, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_5aa5343065c905b5'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 281, 
+y : 205, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a358_85_8c_59_83da'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 594, 
+y : 204, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a42_14b44442_42092'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 539.0, 
+y : 216.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4_7d7e_a9363141a7'],
+strokeWidth : 1.0, 
+fillRed : 249, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 85, 
+y : 270, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 60, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac_52__79259d9b32e'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 126, 
+y : 303, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ae69_7493a6_e7f433'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 161, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad49_9_529fbc748_c'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 171, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7a11e4d4479_18127'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 186, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4d2302__59e_7ffb0'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 196, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a86455a47_e4_46f59'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 214, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aeeaa8edf2e259be4e'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 224, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a87fb9f57_9__8b050'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 156.0, 
+y : 314.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a96a41e417897a8c97'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a96a41e417897a8c97'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5a6b266b855_5799a'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a5a6b266b855_5799a'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3559a5d_c733720db'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 146.0, 
+y : 366.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8250a5325485f_b53'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 123, 
+ y : 354, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af0_2f2_8aa_825a4b'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 156, 
+ y : 355, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a705073a995294040e'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 123, 
+y : 354, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('2'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a705073a995294040e']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5555_6ac5a4f3b_5b'],
+strokeWidth : 1.0, 
+fillRed : 237, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 10, 
+y : 2, 
+fontSize : 19.164835164835164, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 43, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a54057_5f_755_e_'],
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 44, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 82, 
+y : 28, 
+fontSize : 19.516483516483518, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 168, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2b7_7b7a41a041_7f'],
+strokeWidth : 1.0, 
+fillRed : 95, 
+fillGreen : 144, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 80, 
+y : 52, 
+fontSize : 19.86813186813187, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa156feff__e518cfe'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 87, 
+y : 161, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a09728ad408fa8_7a7'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 137.0, 
+y : 172.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac338_48_be0e_c_4d'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 298.0, 
+y : 173.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['acfaccb_8334ae_fa7'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 316, 
+y : 163, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_5aa5343065c905b5'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 281, 
+y : 205, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a358_85_8c_59_83da'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 594, 
+y : 204, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a42_14b44442_42092'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 539.0, 
+y : 216.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4_7d7e_a9363141a7'],
+strokeWidth : 1.0, 
+fillRed : 249, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 85, 
+y : 270, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 60, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac_52__79259d9b32e'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 126, 
+y : 303, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ae69_7493a6_e7f433'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 161, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad49_9_529fbc748_c'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 171, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7a11e4d4479_18127'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 186, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4d2302__59e_7ffb0'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 196, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a86455a47_e4_46f59'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 214, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aeeaa8edf2e259be4e'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 224, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a87fb9f57_9__8b050'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 156.0, 
+y : 314.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ae69de2e2ee97729__'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ae69de2e2ee97729__'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3559a5d_c733720db'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 146.0, 
+y : 366.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8250a5325485f_b53'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 123, 
+y : 354, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af0_2f2_8aa_825a4b'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 156, 
+y : 355, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a705073a995294040e'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 192, 
+ y : 336, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['aae6f8b6c_1_11111b'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 156, 
+y : 355, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('8'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['aae6f8b6c_1_11111b']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5555_6ac5a4f3b_5b'],
+strokeWidth : 1.0, 
+fillRed : 237, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 10, 
+y : 2, 
+fontSize : 19.164835164835164, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 43, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a54057_5f_755_e_'],
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 44, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 82, 
+y : 28, 
+fontSize : 19.516483516483518, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 168, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2b7_7b7a41a041_7f'],
+strokeWidth : 1.0, 
+fillRed : 95, 
+fillGreen : 144, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 80, 
+y : 52, 
+fontSize : 19.86813186813187, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa156feff__e518cfe'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 87, 
+y : 161, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a09728ad408fa8_7a7'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 137.0, 
+y : 172.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac338_48_be0e_c_4d'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 298.0, 
+y : 173.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['acfaccb_8334ae_fa7'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 316, 
+y : 163, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_5aa5343065c905b5'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 281, 
+y : 205, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a358_85_8c_59_83da'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 594, 
+y : 204, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a42_14b44442_42092'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 539.0, 
+y : 216.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4_7d7e_a9363141a7'],
+strokeWidth : 1.0, 
+fillRed : 249, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 85, 
+y : 270, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 60, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac_52__79259d9b32e'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 126, 
+y : 303, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ae69_7493a6_e7f433'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 161, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad49_9_529fbc748_c'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 171, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7a11e4d4479_18127'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 186, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4d2302__59e_7ffb0'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 196, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a86455a47_e4_46f59'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 214, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aeeaa8edf2e259be4e'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 224, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a87fb9f57_9__8b050'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 156.0, 
+y : 314.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_842b20c_f8004_a8'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_842b20c_f8004_a8'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3559a5d_c733720db'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 146.0, 
+y : 366.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8250a5325485f_b53'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 123, 
+y : 354, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af0_2f2_8aa_825a4b'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 156, 
+y : 355, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a705073a995294040e'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 192, 
+y : 336, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aae6f8b6c_1_11111b'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 223, 
+ y : 336, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['ab_f_af9fb5fbc3b5a'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 255, 
+fillGreen : 6, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 258, 
+y : 354, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('= 5'), 
+fillBlue : 56, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ab_f_af9fb5fbc3b5a']);  
+   id2figs['a00105d4f0630d3fdf'] = new   Kinetic.Ellipse( { 
+strokeWidth : 1.0, 
+fillRed : 162, 
+fillGreen : 0, 
+fillAlpha : 0.1912087912087912, 
+strokeBlue : 1, 
+strokeRed : 1, 
+radius  : { x: 33.0 , y: 19.5}, 
+draggable : false, 
+x : 374, 
+y : 461, 
+strokeGreen : 1, 
+shadowEnabled : false, 
+fillBlue : 213, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a00105d4f0630d3fdf']);  
+   id2figs['ac6dd6a04ba0df0f04'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 255, 
+fillGreen : 18, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 360, 
+y : 451, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('Next'), 
+fillBlue : 61, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ac6dd6a04ba0df0f04']);  
+  id2figs['ac6dd6a04ba0df0f04'].off('click tap');
+  id2figs['ac6dd6a04ba0df0f04'].on('click tap', function() {   
+     r9player.resume( ); }); 
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5555_6ac5a4f3b_5b'],
+strokeWidth : 1.0, 
+fillRed : 237, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 10, 
+y : 2, 
+fontSize : 19.164835164835164, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 43, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a54057_5f_755_e_'],
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 44, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 82, 
+y : 28, 
+fontSize : 19.516483516483518, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 168, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2b7_7b7a41a041_7f'],
+strokeWidth : 1.0, 
+fillRed : 95, 
+fillGreen : 144, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 80, 
+y : 52, 
+fontSize : 19.86813186813187, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa156feff__e518cfe'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 87, 
+y : 161, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a09728ad408fa8_7a7'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 137.0, 
+y : 172.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac338_48_be0e_c_4d'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 298.0, 
+y : 173.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['acfaccb_8334ae_fa7'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 316, 
+y : 163, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_5aa5343065c905b5'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 281, 
+y : 205, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a358_85_8c_59_83da'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 594, 
+y : 204, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a42_14b44442_42092'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 539.0, 
+y : 216.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4_7d7e_a9363141a7'],
+strokeWidth : 1.0, 
+fillRed : 249, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 85, 
+y : 270, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 60, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac_52__79259d9b32e'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 126, 
+y : 303, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ae69_7493a6_e7f433'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 161, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad49_9_529fbc748_c'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 171, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7a11e4d4479_18127'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 186, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4d2302__59e_7ffb0'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 196, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a86455a47_e4_46f59'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 214, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aeeaa8edf2e259be4e'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 224, 
+y : 304, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a87fb9f57_9__8b050'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 156.0, 
+y : 314.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3559a5d_c733720db'],
+strokeWidth : 1.0, 
+fillRed : 23, 
+rotation : 49.39870534371634, 
+fillGreen : 189, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 146.0, 
+y : 366.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 9.219544457292887, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8250a5325485f_b53'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 123, 
+y : 354, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a705073a995294040e'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 192, 
+y : 336, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af0_2f2_8aa_825a4b'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 156, 
+y : 355, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aae6f8b6c_1_11111b'],
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 223, 
+y : 336, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 1, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab_f_af9fb5fbc3b5a'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 258, 
+ y : 354, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a00105d4f0630d3fdf'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 374, 
+ y : 461, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac6dd6a04ba0df0f04'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 360, 
+ y : 451, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = true;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+  id2figs['ac6dd6a04ba0df0f04'].off('click tap');
+  id2figs['ac6dd6a04ba0df0f04'].on('click tap', function() {   
+     r9player.resume( ); }); 
+   id2figs['ad_d7_7ca_e4_4f1b_'] = new   Kinetic.Image( { 
+image : a2_f9be48b, 
+x : 144.0, 
+width : 22.0, 
+y : 167.0, 
+image_src : a2_f9be48b.jpg, 
+height : 36.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ad_d7_7ca_e4_4f1b_']);  
+   id2figs['a_7545749d368e5570'] = new   Kinetic.Image( { 
+image : a633c5_e90, 
+x : 190.0, 
+width : 22.0, 
+y : 167.0, 
+image_src : a633c5_e90.jpg, 
+height : 36.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_7545749d368e5570']);  
+   id2figs['a0__6_cdd9bcc45444'] = new   Kinetic.Image( { 
+image : ac0b_500a3, 
+x : 214.0, 
+width : 20.0, 
+y : 168.0, 
+image_src : ac0b_500a3.jpg, 
+height : 32.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a0__6_cdd9bcc45444']);  
+   id2figs['aed1d_70d08e401d_9'] = new   Kinetic.Image( { 
+image : a6_1eb692c, 
+x : 236.0, 
+width : 54.0, 
+y : 168.0, 
+image_src : a6_1eb692c.jpg, 
+height : 32.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['aed1d_70d08e401d_9']);  
+   id2figs['abe63_a53c4f__39c6'] = new   Kinetic.Image( { 
+image : a799454_96, 
+x : 291.0, 
+width : 9.0, 
+y : 167.0, 
+image_src : a799454_96.jpg, 
+height : 36.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['abe63_a53c4f__39c6']);  
+   id2figs['a4_7ec6e744c24e2d5'] = new   Kinetic.Image( { 
+image : abb8d97d95, 
+x : 300.0, 
+width : 54.0, 
+y : 167.0, 
+image_src : abb8d97d95.jpg, 
+height : 36.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a4_7ec6e744c24e2d5']);  
+   id2figs['a1f5d_5df31aa5_1ac'] = new   Kinetic.Image( { 
+image : a8fc_7_0e1, 
+x : 355.0, 
+width : 9.0, 
+y : 167.0, 
+image_src : a8fc_7_0e1.jpg, 
+height : 36.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a1f5d_5df31aa5_1ac']);  
+   id2figs['acf64ffe__66_6bc_e'] = new   Kinetic.RegularPolygon( { 
+strokeWidth : 1.0, 
+fillRed : 210, 
+rotation : 48.81407482314465, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 175.0, 
+y : 138.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 10.63014581273465, 
+fillBlue : 46, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['acf64ffe__66_6bc_e']);  
+   id2figs['a_744_8dd07_6e777_'] = new   Kinetic.RegularPolygon( { 
+strokeWidth : 1.0, 
+fillRed : 210, 
+rotation : 48.81407482314465, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 178.0, 
+y : 188.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 10.63014581273465, 
+fillBlue : 46, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_744_8dd07_6e777_']);  
+   id2figs['a_05d974__0f4c4640'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 162, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 105, 
+y : 127, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString('Define'), 
+fillBlue : 0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_05d974__0f4c4640']);  
+   id2figs['a1900bb_3e1_33__33'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 20, 
+fillGreen : 165, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 196, 
+y : 126, 
+fontSize : 18.10989010989011, 
+strokeGreen : 1, 
+text : normalizeString('as to choose the maximum value at left and right side of'), 
+fillBlue : 0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a1900bb_3e1_33__33']);  
+   id2figs['ac5aa86d984c5dd3e2'] = new   Kinetic.RegularPolygon( { 
+strokeWidth : 1.0, 
+fillRed : 210, 
+rotation : 48.81407482314465, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 709.0, 
+y : 138.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 10.63014581273465, 
+fillBlue : 46, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ac5aa86d984c5dd3e2']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5555_6ac5a4f3b_5b'],
+strokeWidth : 1.0, 
+fillRed : 237, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 10, 
+y : 2, 
+fontSize : 19.164835164835164, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 43, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a54057_5f_755_e_'],
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 44, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 82, 
+y : 28, 
+fontSize : 19.516483516483518, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 168, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2b7_7b7a41a041_7f'],
+strokeWidth : 1.0, 
+fillRed : 95, 
+fillGreen : 144, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 80, 
+y : 52, 
+fontSize : 19.86813186813187, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa156feff__e518cfe'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['aa156feff__e518cfe'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a80_ec8_3db5_4_df_'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a80_ec8_3db5_4_df_'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0c03c4_a646c_c890'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a0c03c4_a646c_c890'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab772_ba3d_ab_ea__'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ab772_ba3d_ab_ea__'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['abd511e_9599_21b59'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['abd511e_9599_21b59'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a96184__31b4383113'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a96184__31b4383113'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab_e8_a_a6856b_6_b'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ab_e8_a_a6856b_6_b'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a883df_1f3115_24e3'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a883df_1f3115_24e3'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab4ffeee8_397be98_'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ab4ffeee8_397be98_'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a09728ad408fa8_7a7'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a09728ad408fa8_7a7'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac338_48_be0e_c_4d'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ac338_48_be0e_c_4d'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['acfaccb_8334ae_fa7'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['acfaccb_8334ae_fa7'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_5aa5343065c905b5'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_5aa5343065c905b5'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a358_85_8c_59_83da'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a358_85_8c_59_83da'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a42_14b44442_42092'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a42_14b44442_42092'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4_7d7e_a9363141a7'],
+strokeWidth : 1.0, 
+fillRed : 249, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 71, 
+y : 98, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 60, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac_52__79259d9b32e'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ac_52__79259d9b32e'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ae69_7493a6_e7f433'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ae69_7493a6_e7f433'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad49_9_529fbc748_c'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ad49_9_529fbc748_c'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7a11e4d4479_18127'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a7a11e4d4479_18127'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4d2302__59e_7ffb0'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a4d2302__59e_7ffb0'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a86455a47_e4_46f59'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a86455a47_e4_46f59'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aeeaa8edf2e259be4e'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['aeeaa8edf2e259be4e'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a87fb9f57_9__8b050'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a87fb9f57_9__8b050'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a26_ce161_a9991e92'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a26_ce161_a9991e92'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ada1___da31ae6e0d7'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ada1___da31ae6e0d7'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_9a9b2b43a9b4_7f1'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_9a9b2b43a9b4_7f1'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a11_eaef_1a__e458a'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a11_eaef_1a__e458a'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3559a5d_c733720db'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a3559a5d_c733720db'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8250a5325485f_b53'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a8250a5325485f_b53'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a705073a995294040e'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a705073a995294040e'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af0_2f2_8aa_825a4b'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['af0_2f2_8aa_825a4b'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aae6f8b6c_1_11111b'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['aae6f8b6c_1_11111b'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab_f_af9fb5fbc3b5a'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ab_f_af9fb5fbc3b5a'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a00105d4f0630d3fdf'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a00105d4f0630d3fdf'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac6dd6a04ba0df0f04'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ac6dd6a04ba0df0f04'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad_d7_7ca_e4_4f1b_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 144.0, 
+ y : 167.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_7545749d368e5570'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 190.0, 
+ y : 167.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a0__6_cdd9bcc45444'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 214.0, 
+ y : 168.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aed1d_70d08e401d_9'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 236.0, 
+ y : 168.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['abe63_a53c4f__39c6'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 291.0, 
+ y : 167.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4_7ec6e744c24e2d5'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 300.0, 
+ y : 167.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1f5d_5df31aa5_1ac'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 355.0, 
+ y : 167.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['acf64ffe__66_6bc_e'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 175.0, 
+ y : 138.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_744_8dd07_6e777_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 178.0, 
+ y : 188.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_05d974__0f4c4640'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 105, 
+ y : 127, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1900bb_3e1_33__33'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 196, 
+ y : 126, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac5aa86d984c5dd3e2'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 709.0, 
+ y : 138.0, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a919348e_4_94e8234'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 120, 
+y : 266, 
+fontSize : 25.846153846153847, 
+strokeGreen : 1, 
+text : normalizeString('9'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a919348e_4_94e8234']);  
+   id2figs['a_9d_f_9fb_750190_'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 141, 
+y : 266, 
+fontSize : 25.846153846153847, 
+strokeGreen : 1, 
+text : normalizeString(''), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_9d_f_9fb_750190_']);  
+   id2figs['a4b_0e99479_752977'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 151, 
+y : 266, 
+fontSize : 25.846153846153847, 
+strokeGreen : 1, 
+text : normalizeString('5'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a4b_0e99479_752977']);  
+   id2figs['a068e4b4619ea4b0bc'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 172, 
+y : 266, 
+fontSize : 25.846153846153847, 
+strokeGreen : 1, 
+text : normalizeString(''), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a068e4b4619ea4b0bc']);  
+   id2figs['ae_0c47_1cc1_ba92_'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 182, 
+y : 266, 
+fontSize : 25.846153846153847, 
+strokeGreen : 1, 
+text : normalizeString('='), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ae_0c47_1cc1_ba92_']);  
+   id2figs['a_4c452f8_df2c456f'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 207, 
+y : 266, 
+fontSize : 25.846153846153847, 
+strokeGreen : 1, 
+text : normalizeString(''), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_4c452f8_df2c456f']);  
+   id2figs['af4553a3bbc4395f9c'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 217, 
+y : 266, 
+fontSize : 25.846153846153847, 
+strokeGreen : 1, 
+text : normalizeString('?'), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['af4553a3bbc4395f9c']);  
+   id2figs['a04603304_c09c36_1'] = new   Kinetic.Text( { 
+strokeWidth : 1.0, 
+fillRed : 1, 
+fillGreen : 1, 
+fillAlpha : 1.0, 
+fontStyle : 'normal', 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+fontFamily : 'OpenSans', 
+draggable : false, 
+x : 217, 
+y : 134, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+text : normalizeString(''), 
+fillBlue : 1, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a04603304_c09c36_1']);  
+   id2figs['a8fa1ba_6ca2f74044'] = new   Kinetic.RegularPolygon( { 
+strokeWidth : 1.0, 
+fillRed : 210, 
+rotation : 48.81407482314465, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 175.0, 
+y : 138.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 10.63014581273465, 
+fillBlue : 46, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a8fa1ba_6ca2f74044']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5555_6ac5a4f3b_5b'],
+strokeWidth : 1.0, 
+fillRed : 237, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 10, 
+y : 2, 
+fontSize : 19.164835164835164, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 43, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_a54057_5f_755_e_'],
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 44, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 82, 
+y : 28, 
+fontSize : 19.516483516483518, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 168, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a2b7_7b7a41a041_7f'],
+strokeWidth : 1.0, 
+fillRed : 95, 
+fillGreen : 144, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 80, 
+y : 52, 
+fontSize : 19.86813186813187, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4_7d7e_a9363141a7'],
+strokeWidth : 1.0, 
+fillRed : 249, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 71, 
+y : 98, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 60, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['acf64ffe__66_6bc_e'],
+strokeWidth : 1.0, 
+fillRed : 210, 
+rotation : 48.81407482314465, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 175.0, 
+y : 138.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 10.63014581273465, 
+opacity : 1.0, 
+fillBlue : 46, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_744_8dd07_6e777_'],
+strokeWidth : 1.0, 
+fillRed : 210, 
+rotation : 48.81407482314465, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 178.0, 
+y : 188.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 10.63014581273465, 
+opacity : 1.0, 
+fillBlue : 46, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_05d974__0f4c4640'],
+strokeWidth : 1.0, 
+fillRed : 0, 
+fillGreen : 162, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 105, 
+y : 127, 
+fontSize : 16.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1900bb_3e1_33__33'],
+strokeWidth : 1.0, 
+fillRed : 20, 
+fillGreen : 165, 
+fillAlpha : 1.0, 
+align : 'left', 
+strokeBlue : 1, 
+strokeRed : 1, 
+tts : false, 
+draggable : false, 
+x : 196, 
+y : 126, 
+fontSize : 18.10989010989011, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillBlue : 0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac5aa86d984c5dd3e2'],
+strokeWidth : 1.0, 
+fillRed : 210, 
+rotation : 48.81407482314465, 
+fillGreen : 0, 
+fillAlpha : 1.0, 
+strokeBlue : 1, 
+strokeRed : 1, 
+draggable : false, 
+x : 709.0, 
+y : 138.0, 
+sides : 5, 
+strokeGreen : 1, 
+radius : 10.63014581273465, 
+opacity : 1.0, 
+fillBlue : 46, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a919348e_4_94e8234'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 120, 
+ y : 266, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_9d_f_9fb_750190_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 141, 
+ y : 266, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4b_0e99479_752977'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 151, 
+ y : 266, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a068e4b4619ea4b0bc'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 172, 
+ y : 266, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ae_0c47_1cc1_ba92_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 182, 
+ y : 266, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_4c452f8_df2c456f'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 207, 
+ y : 266, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af4553a3bbc4395f9c'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 217, 
+ y : 266, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a04603304_c09c36_1'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 217, 
+ y : 134, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8fa1ba_6ca2f74044'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 144.0, 
+ y : 281.0, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+  transpages[0].setup();  layer.batchDraw(); contentlay.batchDraw();
+	    r9player = new R9TransitionChainHandler();
+	    for(var i = 0; i< transpages.length;  i++ )
+	      r9player.add( transpages[i], transpages[i].beforeTransition, transpages[i].transitionDuration ); 
+	   r9player.start();
+ } 
+  var onMessage =  function(subject, eventDataObject, subscriberData){
+ 		if ( subject == 'r9.core.animation.resume'){
+ 			 r9player.resume(); 
+ 			return;
+ 		}
+ 		if ( subject == 'r9.core.animation.stop'){
+ 		 if ( r9player.isRunning  ){ 
+ 	    r9playbutton .moveToTop();  
+ 	    r9player.stop();   
+ 	         layer.draw();   
+ 	 } 
+ 			return;
+ 		} 
+ }
+  window.PageBus.subscribe('r9.core.animation.resume', this,  onMessage, null);
+  window.PageBus.subscribe('r9.core.animation.stop', this,  onMessage, null);
+  </script> </body>  </html>

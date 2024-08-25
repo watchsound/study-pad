@@ -1,0 +1,5111 @@
+ <!DOCTYPE HTML> 
+ <html>
+ <head> <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"> 
+ <style>
+  body {
+   margin: 0px;
+   padding: 0px;
+  }
+ </style>
+ </head>
+ <body>
+ <div id="container" style="position: absolute;
+		    height: 570px;
+		    width: 900px;
+		    margin: -285px 0 0 -450px;
+		    top: 50%;
+		    left: 50%;"></div>  
+   <script src="kinetic-v5.0.2.min.js"></script>
+ <script src="pagebus.js"></script>
+  <script src="r9geom_core.js"></script>
+  <script src="r9geom_main.js"></script>
+   <script src="r9geom.js"></script>
+  <script>
+    var stage = new Kinetic.Stage({
+    container: 'container',
+    width: 900  ,
+    height: 570  
+   });
+   var layer = new Kinetic.Layer();
+   stage.add(layer);
+  var id2figs = {};
+  var transpages = [];  var  r9player ; var contentlay ; 
+  var usetts = 'speechSynthesis' in window; 
+var newimages=[], loadedimages=0;
+  	var r9playbutton = new Kinetic.Label({ 
+        x: 40, 
+        y: stage.getHeight(), 
+     opacity: 0.75 
+   }); 
+   r9playbutton.add(new Kinetic.Tag({ 
+       fill: 'black', 
+       pointerDirection: 'down', 
+      pointerWidth: 10, 
+      pointerHeight: 10, 
+      lineJoin: 'round', 
+     shadowColor: 'black', 
+      shadowBlur: 10, 
+         shadowOffset: {x:5,y:10}, 
+     shadowOpacity: 0.5 
+    }));  
+   r9playbutton.add(new Kinetic.Text({   
+        text: 'Start',  
+       fontFamily: 'Calibri',  
+      fontSize: 18,  
+        padding: 5,  
+        fill: 'white' 
+     }));  
+     r9playbutton.on('tap', function() { 
+     if (! r9player.isRunning  ){  
+         r9playbutton2.moveToTop(); 
+         r9player.start(); 
+  		    layer.draw();  
+  	  }
+      }); 
+      r9playbutton.on('click', function() {  
+          if (! r9player.isRunning  ){   
+         r9playbutton2.moveToTop();  
+         r9player.start();  
+  	    layer.draw();   
+    } 
+    });  
+     r9playbutton.on('mousedown touchstart', function() {  
+           r9playbutton.setOpacity( 0.25  );  
+  		   layer.draw();   
+        });  
+        r9playbutton.on('mouseup touchend', function() {  
+            r9playbutton.setOpacity( 0.75  );  
+   		   layer.draw();  
+       });  
+   	  r9playbutton.on('mouseover', function () {   
+                document.body.style.cursor = 'pointer';   
+          });   
+          r9playbutton.on('mouseout', function () {   
+                   document.body.style.cursor = 'default';   
+          });   
+       layer.add(	r9playbutton );  
+    	 var r9playbutton2 = new Kinetic.Label({  
+        x: 40,  
+           y: stage.getHeight(),  
+        opacity: 0.75  
+       });  
+       r9playbutton2.add(new Kinetic.Tag({  
+       fill: 'black',  
+        pointerDirection: 'down',  
+     pointerWidth: 10,  
+        pointerHeight: 10,  
+         lineJoin: 'round',  
+          shadowColor: 'black',  
+          shadowBlur: 10,  
+             shadowOffset: {x:5,y:10},  
+          shadowOpacity: 0.5  
+          }));   
+        r9playbutton2.add(new Kinetic.Text({    
+           text: 'Stop',   
+          fontFamily: 'Calibri',   
+         fontSize: 18,   
+           padding: 5,   
+          fill: 'white'   
+          }));   
+         r9playbutton2.on('tap', function() {  
+   	      if ( r9player.isRunning  ){ 
+  			   r9playbutton .moveToTop();  
+  	       r9player.stop();   
+  		    layer.draw();   
+  	  }  
+        });  
+   	    r9playbutton2.on('click', function() {  
+             if ( r9player.isRunning  ){ 
+     r9playbutton .moveToTop();  
+        r9player.stop();   
+  	    layer.draw();   
+    }  
+   });  
+     r9playbutton2.on('mousedown touchstart', function() {  
+            r9playbutton2.setOpacity( 0.25  );  
+   		   layer.draw();   
+         });  
+          r9playbutton2.on('mouseup touchend', function() {  
+           r9playbutton2.setOpacity( 0.75  );  
+    		   layer.draw();  
+         });  
+     	  r9playbutton2.on('mouseover', function () {   
+                   document.body.style.cursor = 'pointer';   
+           });   
+          r9playbutton2.on('mouseout', function () {   
+                   document.body.style.cursor = 'default';   
+            });   
+        layer.add(	r9playbutton2 );  
+   var r9restartbutton = new Kinetic.Label({ 
+     x:  stage.getWidth()  -40, 
+    y: stage.getHeight()  , 
+    opacity: 0.75 
+ }); 
+  r9restartbutton.add(new Kinetic.Tag({ 
+   fill: 'black', 
+   pointerDirection: 'down',
+   pointerWidth: 10, 
+    pointerHeight: 10, 
+    lineJoin: 'round', 
+    shadowColor: 'black', 
+    shadowBlur: 10, 
+       shadowOffset: {x:5,y:10}, 
+   shadowOpacity: 0.5 
+  })); 
+  r9restartbutton.add(new Kinetic.Text({   
+       text: 'Reload',  
+      fontFamily: 'Calibri',  
+     fontSize: 18,  
+       padding: 5,  
+      fill: 'white'  
+     }));  
+     r9restartbutton.on('tap', function() { 
+          setupscreen(); 
+    }); 
+ 	    r9restartbutton.on('click', function() { 
+          setupscreen();  
+  }); 
+   r9restartbutton.on('mousedown touchstart', function() { 
+           r9restartbutton.setOpacity( 0.25  ); 
+ 		   layer.draw();  
+       }); 
+      r9restartbutton.on('mouseup touchend', function() { 
+         r9restartbutton.setOpacity( 0.75  ); 
+ 		   layer.draw(); 
+     }); 
+ 	  r9restartbutton.on('mouseover', function () {  
+             document.body.style.cursor = 'pointer';  
+          });  
+     r9restartbutton.on('mouseout', function () {  
+              document.body.style.cursor = 'default';  
+        });  
+    layer.add(	r9restartbutton ); 
+ function setupscreen() {
+     if ( r9player ){
+ 	    r9player.distroy();
+ 	}
+ 	   if ( contentlay ) {
+ 	      contentlay.destroy();
+ 		  id2figs = {};
+ 		  transpages = []; 
+ 	  }
+ 	  contentlay = new Kinetic.Layer();  
+   stage.add(contentlay);  layer.moveToTop(); 
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a29e_af230d_2d885_'] = new   Kinetic.Text( { 
+text : normalizeString('pigeonhole principle -1'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 144, 
+fontStyle : 'bold', 
+fontSize : 26.197802197802197, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 58, 
+fillBlue : 0, 
+y : 173, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 195, 
+  }); 
+ contentlay.add(id2figs['a29e_af230d_2d885_']);  
+   id2figs['aa_045a_60ce1866e_'] = new   Kinetic.Ellipse( { 
+radius  : { x: 57.0 , y: 22.0}, 
+strokeBlue : 1, 
+fillGreen : 182, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 0, 
+fillAlpha : 0.8, 
+fillBlue : 186, 
+y : 399, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 545, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['aa_045a_60ce1866e_']);  
+   id2figs['ab017c_500ef565ff0'] = new   Kinetic.Text( { 
+text : normalizeString('Next'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'normal', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 388, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 527, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ab017c_500ef565ff0']);  
+   id2figs['a9_f10b1705acb6f11'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.5 , y: 13.5}, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 296, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 162, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a9_f10b1705acb6f11']);  
+   id2figs['a_c__7a0_9_c6e666e'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.5 , y: 13.5}, 
+strokeBlue : 1, 
+fillGreen : 138, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 6, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 297, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 210, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_c__7a0_9_c6e666e']);  
+   id2figs['a_b440d475ea44ebc4'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.5 , y: 13.5}, 
+strokeBlue : 1, 
+fillGreen : 90, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 195, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 300, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 272, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_b440d475ea44ebc4']);  
+   id2figs['a87e8e707e5ca6f47f'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.5 , y: 13.5}, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 301, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 316, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a87e8e707e5ca6f47f']);  
+   id2figs['a62e54cd4d_944a131'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.5 , y: 13.5}, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 301, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 383, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a62e54cd4d_944a131']);  
+   id2figs['aa_a296629e2eacf0d'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.5 , y: 13.5}, 
+strokeBlue : 1, 
+fillGreen : 10, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 171, 
+y : 301, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 423, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['aa_a296629e2eacf0d']);  
+   id2figs['a5ea9dcf_ccc4ce2cd'] = new   Kinetic.Text( { 
+text : normalizeString('A bag contains 2 red balls,  2  green balls,  2  blue balls,r9newlineYou randomly take out some balls from the bag.r9newliner9newlinehow many balls you need to take to ensure that at least r9newlinetwo balls have same color?'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'normal', 
+fontSize : 20.615384615384613, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 97, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 130, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a5ea9dcf_ccc4ce2cd']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa_045a_60ce1866e_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 545, 
+ y : 399, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab017c_500ef565ff0'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 527, 
+ y : 388, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9_f10b1705acb6f11'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 162, 
+ y : 296, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_c__7a0_9_c6e666e'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 210, 
+ y : 297, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_b440d475ea44ebc4'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 272, 
+ y : 300, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a87e8e707e5ca6f47f'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 316, 
+ y : 301, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a62e54cd4d_944a131'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 383, 
+ y : 301, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa_a296629e2eacf0d'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 423, 
+ y : 301, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 130, 
+ y : 97, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa_045a_60ce1866e_'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['aa_045a_60ce1866e_'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab017c_500ef565ff0'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ab017c_500ef565ff0'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9_f10b1705acb6f11'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 177, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 151, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_c__7a0_9_c6e666e'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 138, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 6, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 178, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 199, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_b440d475ea44ebc4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 90, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 195, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 181, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 261, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a87e8e707e5ca6f47f'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 305, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a62e54cd4d_944a131'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 372, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa_a296629e2eacf0d'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 10, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 171, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 412, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a8a_f1be05f_15_11_'] = new   Kinetic.Text( { 
+text : normalizeString('If we pick all of them,   of course we  will have r9newlineballs with the same  color r9newliner9newlinewhatr9apostrophes the minumum   number   of balls   to r9newlineensure that  at least two of  them  have  the samer9newlinecolor ?'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'normal', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 220, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 110, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a8a_f1be05f_15_11_']);  
+   id2figs['ad8c67362d0_8c86b6'] = new   Kinetic.Ellipse( { 
+radius  : { x: 56.0 , y: 25.5}, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 116, 
+fillAlpha : 0.6, 
+fillBlue : 231, 
+y : 387, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 415, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ad8c67362d0_8c86b6']);  
+   id2figs['ada76ecd2db_5da943'] = new   Kinetic.Text( { 
+text : normalizeString('Next'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'normal', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 379, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 399, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ada76ecd2db_5da943']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9_f10b1705acb6f11'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 177, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 151, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_c__7a0_9_c6e666e'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 138, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 6, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 178, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 199, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_b440d475ea44ebc4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 90, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 195, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 181, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 261, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a87e8e707e5ca6f47f'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 305, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a62e54cd4d_944a131'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 372, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa_a296629e2eacf0d'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 10, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 171, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 412, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8a_f1be05f_15_11_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 110, 
+ y : 220, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad8c67362d0_8c86b6'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 415, 
+ y : 387, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ada76ecd2db_5da943'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 399, 
+ y : 379, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a__dd64e01_4_46_b1'] = new   Kinetic.Text( { 
+text : normalizeString('we can image the best case  and  worst  case .r9newliner9newlinewhat  the  best  case  to   get   same  colo r?'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'normal', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 216, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 118, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a__dd64e01_4_46_b1']);  
+   id2figs['a5_b4_7__cf6ab44fa'] = new   Kinetic.Ellipse( { 
+radius  : { x: 45.0 , y: 27.5}, 
+strokeBlue : 1, 
+fillGreen : 111, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 171, 
+fillAlpha : 0.4, 
+fillBlue : 255, 
+y : 357, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 392, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a5_b4_7__cf6ab44fa']);  
+   id2figs['a3cfe7cee41569e3fd'] = new   Kinetic.Text( { 
+text : normalizeString('Next'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'normal', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 345, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 374, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a3cfe7cee41569e3fd']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9_f10b1705acb6f11'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 177, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 151, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_c__7a0_9_c6e666e'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 138, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 6, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 178, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 199, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_b440d475ea44ebc4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 90, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 195, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 181, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 261, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a87e8e707e5ca6f47f'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 305, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a62e54cd4d_944a131'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 372, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa_a296629e2eacf0d'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 10, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 171, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 412, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8a_f1be05f_15_11_'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a8a_f1be05f_15_11_'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad8c67362d0_8c86b6'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ad8c67362d0_8c86b6'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ada76ecd2db_5da943'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ada76ecd2db_5da943'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a__dd64e01_4_46_b1'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 118, 
+ y : 216, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5_b4_7__cf6ab44fa'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 392, 
+ y : 357, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3cfe7cee41569e3fd'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 374, 
+ y : 345, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['af358335_a6_fc3eff'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.5 , y: 13.5}, 
+strokeBlue : 1, 
+fillGreen : 138, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 6, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 178, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 199, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['af358335_a6_fc3eff']);  
+   id2figs['a_9587_a_83c88f_b5'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.5 , y: 13.5}, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 372, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_9587_a_83c88f_b5']);  
+   id2figs['a1e_f210fff6fa6ee0'] = new   Kinetic.Text( { 
+text : normalizeString('The ideal case is the pick the two  balls  r9newlineand two balls  happen  to  have   the  same color'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'normal', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 272, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 132, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a1e_f210fff6fa6ee0']);  
+   id2figs['a11cf14aac5f61aa61'] = new   Kinetic.Ellipse( { 
+radius  : { x: 48.0 , y: 20.5}, 
+strokeBlue : 1, 
+fillGreen : 186, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 145, 
+fillAlpha : 0.2, 
+fillBlue : 0, 
+y : 380, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 402, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a11cf14aac5f61aa61']);  
+   id2figs['a067a2dc79_37968ca'] = new   Kinetic.Text( { 
+text : normalizeString('Next'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'normal', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 368, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 389, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a067a2dc79_37968ca']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9_f10b1705acb6f11'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 177, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 151, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_c__7a0_9_c6e666e'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 138, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 6, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 179, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 197, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_b440d475ea44ebc4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 90, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 195, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 181, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 261, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a87e8e707e5ca6f47f'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 305, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a62e54cd4d_944a131'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 372, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa_a296629e2eacf0d'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 10, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 171, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 412, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a__dd64e01_4_46_b1'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a__dd64e01_4_46_b1'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5_b4_7__cf6ab44fa'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a5_b4_7__cf6ab44fa'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a3cfe7cee41569e3fd'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a3cfe7cee41569e3fd'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af358335_a6_fc3eff'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 198, 
+ y : 233, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_9587_a_83c88f_b5'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 241, 
+ y : 236, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1e_f210fff6fa6ee0'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 132, 
+ y : 272, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a11cf14aac5f61aa61'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 402, 
+ y : 380, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a067a2dc79_37968ca'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 389, 
+ y : 368, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a1ff34f81e82_266_1'] = new   Kinetic.Text( { 
+text : normalizeString('Whatr9apostrophes the worst  case ?    r9newlineImage a most  unlucky   case    ?'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'normal', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 225, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 138, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a1ff34f81e82_266_1']);  
+   id2figs['a9db246434_d3_b226'] = new   Kinetic.Ellipse( { 
+radius  : { x: 50.0 , y: 20.5}, 
+strokeBlue : 1, 
+fillGreen : 7, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 0, 
+fillAlpha : 0.4, 
+fillBlue : 180, 
+y : 351, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 362, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a9db246434_d3_b226']);  
+   id2figs['a848abdf_4211df2a2'] = new   Kinetic.Text( { 
+text : normalizeString('Next'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 339, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 347, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a848abdf_4211df2a2']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9_f10b1705acb6f11'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 177, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 151, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_c__7a0_9_c6e666e'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 138, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 6, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 179, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 197, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_b440d475ea44ebc4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 90, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 195, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 181, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 261, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a87e8e707e5ca6f47f'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 305, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a62e54cd4d_944a131'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 372, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa_a296629e2eacf0d'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 10, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 171, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 412, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['af358335_a6_fc3eff'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['af358335_a6_fc3eff'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_9587_a_83c88f_b5'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_9587_a_83c88f_b5'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1e_f210fff6fa6ee0'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a1e_f210fff6fa6ee0'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a11cf14aac5f61aa61'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a11cf14aac5f61aa61'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a067a2dc79_37968ca'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a067a2dc79_37968ca'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1ff34f81e82_266_1'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 138, 
+ y : 225, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9db246434_d3_b226'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 362, 
+ y : 351, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a848abdf_4211df2a2'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 347, 
+ y : 339, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a381ff804bc42a__44'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.5 , y: 13.5}, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 177, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 151, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a381ff804bc42a__44']);  
+   id2figs['a94f_2eeeaf7503ac_'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.5 , y: 13.5}, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 305, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a94f_2eeeaf7503ac_']);  
+   id2figs['a999f9c489884_98_4'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.5 , y: 13.5}, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 372, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a999f9c489884_98_4']);  
+   id2figs['ac21b3b134c2222425'] = new   Kinetic.Ellipse( { 
+radius  : { x: 53.0 , y: 23.5}, 
+strokeBlue : 1, 
+fillGreen : 78, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 0, 
+fillAlpha : 0.2, 
+fillBlue : 243, 
+y : 391, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 394, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ac21b3b134c2222425']);  
+   id2figs['ae00343b42b5b327b4'] = new   Kinetic.Text( { 
+text : normalizeString('Next'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'normal', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 377, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 381, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ae00343b42b5b327b4']);  
+   id2figs['a7012285edd80_0ead'] = new   Kinetic.Text( { 
+text : normalizeString('In the worse case,   we   randomly  get one,   r9newlinethen get another one,    then    get another one,     r9newlineall of them are  of different color ....'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'normal', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 275, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 127, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a7012285edd80_0ead']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9_f10b1705acb6f11'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a9_f10b1705acb6f11'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_c__7a0_9_c6e666e'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 138, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 6, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 179, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 197, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_b440d475ea44ebc4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 90, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 195, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 181, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 261, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a87e8e707e5ca6f47f'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a87e8e707e5ca6f47f'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a62e54cd4d_944a131'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a62e54cd4d_944a131'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa_a296629e2eacf0d'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 10, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 171, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 412, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1ff34f81e82_266_1'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a1ff34f81e82_266_1'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9db246434_d3_b226'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a9db246434_d3_b226'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a848abdf_4211df2a2'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a848abdf_4211df2a2'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a381ff804bc42a__44'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 166, 
+ y : 245, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f_2eeeaf7503ac_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 233, 
+ y : 247, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a999f9c489884_98_4'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 295, 
+ y : 248, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac21b3b134c2222425'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 394, 
+ y : 391, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ae00343b42b5b327b4'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 381, 
+ y : 377, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7012285edd80_0ead'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 127, 
+ y : 275, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a446ac4a514152a55e'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.0 , y: 14.0}, 
+strokeBlue : 1, 
+fillGreen : 150, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 15, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 182, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 209, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a446ac4a514152a55e']);  
+   id2figs['a4f2d96da_c_2_ae_2'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.0 , y: 14.0}, 
+strokeBlue : 1, 
+fillGreen : 76, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 189, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 184, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 259, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a4f2d96da_c_2_ae_2']);  
+   id2figs['a55776f3e233547155'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.0 , y: 14.0}, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 0, 
+fillAlpha : 1.0, 
+fillBlue : 168, 
+y : 185, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 387, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a55776f3e233547155']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_c__7a0_9_c6e666e'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_c__7a0_9_c6e666e'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_b440d475ea44ebc4'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a_b440d475ea44ebc4'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa_a296629e2eacf0d'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['aa_a296629e2eacf0d'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a381ff804bc42a__44'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 245, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 166, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f_2eeeaf7503ac_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 247, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 233, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a999f9c489884_98_4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 248, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 295, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac21b3b134c2222425'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ac21b3b134c2222425'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ae00343b42b5b327b4'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ae00343b42b5b327b4'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7012285edd80_0ead'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a7012285edd80_0ead'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a446ac4a514152a55e'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 209, 
+ y : 182, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4f2d96da_c_2_ae_2'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 259, 
+ y : 184, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a55776f3e233547155'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 387, 
+ y : 185, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['ad594657da473d_2a_'] = new   Kinetic.Ellipse( { 
+radius  : { x: 51.5 , y: 25.0}, 
+strokeBlue : 1, 
+fillGreen : 225, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 63, 
+fillAlpha : 0.4, 
+fillBlue : 0, 
+y : 367, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 416, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ad594657da473d_2a_']);  
+   id2figs['ab74ba98b_0b4d_538'] = new   Kinetic.Text( { 
+text : normalizeString('Next'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'normal', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 354, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 400, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ab74ba98b_0b4d_538']);  
+   id2figs['ab48_64_98604b_4ff'] = new   Kinetic.Text( { 
+text : normalizeString(''), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'normal', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 360, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 139, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ab48_64_98604b_4ff']);  
+   id2figs['a4__2bb09_84b29648'] = new   Kinetic.Text( { 
+text : normalizeString('There are total 3 colors.   we  are so  unlucky  thatr9newlinewe picked all 3 colors  before   we  get   any of    the r9newlineballs  with the same color'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'normal', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 271, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 112, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a4__2bb09_84b29648']);  
+   id2figs['a1_927ad22f1b_9_d_'] = new   Kinetic.Text( { 
+text : normalizeString('what happens next?'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 150, 
+fontStyle : 'bold', 
+fontSize : 18.46153846153846, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 84, 
+fillBlue : 0, 
+y : 353, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 118, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a1_927ad22f1b_9_d_']);  
+   id2figs['a55358_a4b__e47_b3'] = new   Kinetic.Ellipse( { 
+radius  : { x: 15.5 , y: 13.5}, 
+strokeBlue : 1, 
+fillGreen : 165, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 3, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 183, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 165, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a55358_a4b__e47_b3']);  
+   id2figs['a13778f1_70c2711c1'] = new   Kinetic.Ellipse( { 
+radius  : { x: 15.5 , y: 13.5}, 
+strokeBlue : 1, 
+fillGreen : 74, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 168, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 184, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 220, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a13778f1_70c2711c1']);  
+   id2figs['a37bcf277b3578_f_8'] = new   Kinetic.Ellipse( { 
+radius  : { x: 15.5 , y: 13.5}, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 56, 
+fillAlpha : 1.0, 
+fillBlue : 174, 
+y : 181, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 375, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a37bcf277b3578_f_8']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a381ff804bc42a__44'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 245, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 166, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f_2eeeaf7503ac_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 247, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 233, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a999f9c489884_98_4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 248, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 295, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a446ac4a514152a55e'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a446ac4a514152a55e'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4f2d96da_c_2_ae_2'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a4f2d96da_c_2_ae_2'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a55776f3e233547155'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a55776f3e233547155'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad594657da473d_2a_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 416, 
+ y : 367, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab74ba98b_0b4d_538'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 400, 
+ y : 354, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab48_64_98604b_4ff'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 139, 
+ y : 360, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4__2bb09_84b29648'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 112, 
+ y : 271, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1_927ad22f1b_9_d_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 118, 
+ y : 353, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a55358_a4b__e47_b3'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 165, 
+ y : 183, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a13778f1_70c2711c1'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 220, 
+ y : 184, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a37bcf277b3578_f_8'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 375, 
+ y : 181, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a8647948_914828678'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.0 , y: 15.0}, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 55, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 183, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 165, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a8647948_914828678']);  
+   id2figs['a_15_95dfcde06_19_'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.0 , y: 15.0}, 
+strokeBlue : 1, 
+fillGreen : 57, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 159, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 187, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 225, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a_15_95dfcde06_19_']);  
+   id2figs['a6d17c470520812_25'] = new   Kinetic.Ellipse( { 
+radius  : { x: 14.0 , y: 15.0}, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 10, 
+fillAlpha : 1.0, 
+fillBlue : 165, 
+y : 186, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 361, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a6d17c470520812_25']);  
+   id2figs['a9d90_9c2489_e49f0'] = new   Kinetic.R9Star( { 
+endX : 173.0, 
+endY : 198.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 284.0, 
+startY : 232.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a9d90_9c2489_e49f0']);  
+   id2figs['a9c4bf2b401_50bdb6'] = new   Kinetic.R9Star( { 
+endX : 210.0, 
+endY : 201.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 183.0, 
+startY : 225.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a9c4bf2b401_50bdb6']);  
+   id2figs['aa4ddb_60edc888a_3'] = new   Kinetic.R9Star( { 
+endX : 344.0, 
+endY : 199.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 246.0, 
+startY : 233.0, 
+strokeGreen : 1, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['aa4ddb_60edc888a_3']);  
+   id2figs['a62f6468cc419124b0'] = new   Kinetic.Text( { 
+text : normalizeString('No matter  which color  you will pick,r9newlineyou will find a matched color in your  r9newlinealready picked balls.'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 274, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 120, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a62f6468cc419124b0']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a381ff804bc42a__44'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 245, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 166, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f_2eeeaf7503ac_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 247, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 233, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a999f9c489884_98_4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 248, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 295, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ad594657da473d_2a_'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ad594657da473d_2a_'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab74ba98b_0b4d_538'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ab74ba98b_0b4d_538'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab48_64_98604b_4ff'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 360, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 139, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4__2bb09_84b29648'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a4__2bb09_84b29648'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1_927ad22f1b_9_d_'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a1_927ad22f1b_9_d_'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a55358_a4b__e47_b3'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a55358_a4b__e47_b3'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a13778f1_70c2711c1'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a13778f1_70c2711c1'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a37bcf277b3578_f_8'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a37bcf277b3578_f_8'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8647948_914828678'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 165, 
+ y : 183, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_15_95dfcde06_19_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 225, 
+ y : 187, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6d17c470520812_25'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 361, 
+ y : 186, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9d90_9c2489_e49f0'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 284.0, 
+ startY : 232.0, 
+ endX : 173.0, 
+ endY : 198.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9c4bf2b401_50bdb6'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 183.0, 
+ startY : 225.0, 
+ endX : 210.0, 
+ endY : 201.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa4ddb_60edc888a_3'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ startX : 246.0, 
+ startY : 233.0, 
+ endX : 344.0, 
+ endY : 199.0, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a62f6468cc419124b0'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 120, 
+ y : 274, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a6412883f_ee286e10'] = new   Kinetic.Text( { 
+text : normalizeString('because you already picked all the colors'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 359, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 120, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a6412883f_ee286e10']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a381ff804bc42a__44'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 245, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 166, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f_2eeeaf7503ac_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 247, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 233, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a999f9c489884_98_4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 248, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 295, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab48_64_98604b_4ff'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 360, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 139, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8647948_914828678'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 55, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 183, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 165, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_15_95dfcde06_19_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 57, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 159, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 187, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 225, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6d17c470520812_25'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 10, 
+fillAlpha : 1.0, 
+fillBlue : 165, 
+y : 186, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 361, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9d90_9c2489_e49f0'],
+endX : 173.0, 
+endY : 198.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 284.0, 
+startY : 232.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9c4bf2b401_50bdb6'],
+endX : 210.0, 
+endY : 201.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 183.0, 
+startY : 225.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa4ddb_60edc888a_3'],
+endX : 344.0, 
+endY : 199.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 246.0, 
+startY : 233.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a62f6468cc419124b0'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 274, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 120, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6412883f_ee286e10'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 120, 
+ y : 359, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a4d5_6659f906_6da4'] = new   Kinetic.Text( { 
+text : normalizeString('so in the worse case,   you  picked   3 +1 r9newlineballs , and you will always have two balls with r9newlinethe same color .'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 280, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 119, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a4d5_6659f906_6da4']);  
+   id2figs['a4af00_010af5_bf0_'] = new   Kinetic.Ellipse( { 
+radius  : { x: 48.5 , y: 20.5}, 
+strokeBlue : 1, 
+fillGreen : 199, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 255, 
+fillAlpha : 0.4, 
+fillBlue : 69, 
+y : 404, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 382, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a4af00_010af5_bf0_']);  
+   id2figs['a1011_04ea6cb__1c3'] = new   Kinetic.Text( { 
+text : normalizeString('Next'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 393, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 368, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a1011_04ea6cb__1c3']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a381ff804bc42a__44'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 245, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 166, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f_2eeeaf7503ac_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 247, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 233, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a999f9c489884_98_4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 248, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 295, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab48_64_98604b_4ff'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 360, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 139, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8647948_914828678'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 55, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 183, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 165, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_15_95dfcde06_19_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 57, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 159, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 187, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 225, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6d17c470520812_25'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 10, 
+fillAlpha : 1.0, 
+fillBlue : 165, 
+y : 186, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 361, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9d90_9c2489_e49f0'],
+endX : 173.0, 
+endY : 198.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 284.0, 
+startY : 232.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9c4bf2b401_50bdb6'],
+endX : 210.0, 
+endY : 201.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 183.0, 
+startY : 225.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa4ddb_60edc888a_3'],
+endX : 344.0, 
+endY : 199.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 246.0, 
+startY : 233.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a62f6468cc419124b0'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a62f6468cc419124b0'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6412883f_ee286e10'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a6412883f_ee286e10'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4d5_6659f906_6da4'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 119, 
+ y : 280, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4af00_010af5_bf0_'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 382, 
+ y : 404, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1011_04ea6cb__1c3'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 368, 
+ y : 393, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a1d3ff7898a8a_ba2f'] = new   Kinetic.Text( { 
+text : normalizeString('What do you learn  from this  funny story?'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 294, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 129, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a1d3ff7898a8a_ba2f']);  
+   id2figs['a1__a14f_a9b_51f_b'] = new   Kinetic.Ellipse( { 
+radius  : { x: 53.5 , y: 25.0}, 
+strokeBlue : 1, 
+fillGreen : 192, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 100, 
+fillAlpha : 0.6, 
+fillBlue : 0, 
+y : 403, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 382, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a1__a14f_a9b_51f_b']);  
+   id2figs['a7368bcb__4e1_4863'] = new   Kinetic.Text( { 
+text : normalizeString('Next'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 396, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 366, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a7368bcb__4e1_4863']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a381ff804bc42a__44'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 245, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 166, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f_2eeeaf7503ac_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 247, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 233, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a999f9c489884_98_4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 248, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 295, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab48_64_98604b_4ff'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 360, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 139, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8647948_914828678'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 55, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 183, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 165, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_15_95dfcde06_19_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 57, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 159, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 187, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 225, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6d17c470520812_25'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 10, 
+fillAlpha : 1.0, 
+fillBlue : 165, 
+y : 186, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 361, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9d90_9c2489_e49f0'],
+endX : 173.0, 
+endY : 198.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 284.0, 
+startY : 232.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9c4bf2b401_50bdb6'],
+endX : 210.0, 
+endY : 201.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 183.0, 
+startY : 225.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa4ddb_60edc888a_3'],
+endX : 344.0, 
+endY : 199.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 246.0, 
+startY : 233.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4d5_6659f906_6da4'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 280, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 119, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4af00_010af5_bf0_'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a4af00_010af5_bf0_'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1011_04ea6cb__1c3'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a1011_04ea6cb__1c3'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1d3ff7898a8a_ba2f'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 129, 
+ y : 294, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1__a14f_a9b_51f_b'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 382, 
+ y : 403, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7368bcb__4e1_4863'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 366, 
+ y : 396, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a86d_6f652_b55d40b'] = new   Kinetic.Text( { 
+text : normalizeString('We can think about the best case r9newlineand worst case for the problem, r9newlineand it will give us some insight r9newlineabou the problem'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 18.10989010989011, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 278, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 108, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a86d_6f652_b55d40b']);  
+   id2figs['a779_276f14f7227bb'] = new   Kinetic.Ellipse( { 
+radius  : { x: 35.5 , y: 21.0}, 
+strokeBlue : 1, 
+fillGreen : 201, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+fillRed : 117, 
+fillAlpha : 0.4, 
+fillBlue : 0, 
+y : 389, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 394, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a779_276f14f7227bb']);  
+   id2figs['a1a4d78a8__fa3f2_d'] = new   Kinetic.Text( { 
+text : normalizeString('Next'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 375, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 377, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a1a4d78a8__fa3f2_d']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a381ff804bc42a__44'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 245, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 166, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f_2eeeaf7503ac_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 247, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 233, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a999f9c489884_98_4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 248, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 295, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ab48_64_98604b_4ff'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['ab48_64_98604b_4ff'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8647948_914828678'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 55, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 183, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 165, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_15_95dfcde06_19_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 57, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 159, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 187, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 225, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6d17c470520812_25'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 10, 
+fillAlpha : 1.0, 
+fillBlue : 165, 
+y : 186, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 361, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9d90_9c2489_e49f0'],
+endX : 173.0, 
+endY : 198.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 284.0, 
+startY : 232.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9c4bf2b401_50bdb6'],
+endX : 210.0, 
+endY : 201.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 183.0, 
+startY : 225.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa4ddb_60edc888a_3'],
+endX : 344.0, 
+endY : 199.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 246.0, 
+startY : 233.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a4d5_6659f906_6da4'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a4d5_6659f906_6da4'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1d3ff7898a8a_ba2f'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a1d3ff7898a8a_ba2f'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1__a14f_a9b_51f_b'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a1__a14f_a9b_51f_b'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a7368bcb__4e1_4863'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a7368bcb__4e1_4863'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a86d_6f652_b55d40b'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 108, 
+ y : 278, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a779_276f14f7227bb'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 394, 
+ y : 389, 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1a4d78a8__fa3f2_d'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 377, 
+ y : 375, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['ac6599fbef733ff_95'] = new   Kinetic.Text( { 
+text : normalizeString('Another thing  is about a very  very  usefullr9newlineprinciple :  pigeonhole principle'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 1, 
+fontStyle : 'bold', 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 1, 
+fillBlue : 1, 
+y : 284, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 106, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['ac6599fbef733ff_95']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a381ff804bc42a__44'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 245, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 166, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f_2eeeaf7503ac_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 247, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 233, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a999f9c489884_98_4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 248, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 295, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8647948_914828678'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 55, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 183, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 165, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_15_95dfcde06_19_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 57, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 159, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 187, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 225, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6d17c470520812_25'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 10, 
+fillAlpha : 1.0, 
+fillBlue : 165, 
+y : 186, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 361, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9d90_9c2489_e49f0'],
+endX : 173.0, 
+endY : 198.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 284.0, 
+startY : 232.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9c4bf2b401_50bdb6'],
+endX : 210.0, 
+endY : 201.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 183.0, 
+startY : 225.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa4ddb_60edc888a_3'],
+endX : 344.0, 
+endY : 199.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 246.0, 
+startY : 233.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a86d_6f652_b55d40b'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a86d_6f652_b55d40b'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a779_276f14f7227bb'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a779_276f14f7227bb'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a1a4d78a8__fa3f2_d'],
+opacity : 0 , 
+easing: Kinetic.Easings['Linear'], 
+onFinish: function() {  id2figs['a1a4d78a8__fa3f2_d'].remove();  } , 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac6599fbef733ff_95'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 106, 
+ y : 284, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+   id2figs['a00b4442_c6_53c323'] = new   Kinetic.Text( { 
+text : normalizeString('if we put more than N objects into N  boxes, r9newlinethen at least one box has more than 1 object'), 
+strokeBlue : 1, 
+align : 'left', 
+fillGreen : 145, 
+fontStyle : 'bold', 
+fontSize : 22.68131868131868, 
+tts : false, 
+strokeGreen : 1, 
+fontFamily : 'OpenSans', 
+fillAlpha : 1.0, 
+fillRed : 234, 
+fillBlue : 0, 
+y : 324, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 65, 
+opacity : 0 
+  }); 
+ contentlay.add(id2figs['a00b4442_c6_53c323']);  
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a29e_af230d_2d885_'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 144, 
+fontSize : 14.945054945054945, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 58, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 12, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 17, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a5ea9dcf_ccc4ce2cd'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 14.637362637362635, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 40, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 95, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a381ff804bc42a__44'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 62, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 222, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 245, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 166, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a94f_2eeeaf7503ac_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 86, 
+fillAlpha : 1.0, 
+fillBlue : 153, 
+y : 247, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 233, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a999f9c489884_98_4'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 26, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 248, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 295, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a8647948_914828678'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 144, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 55, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 183, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 165, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a_15_95dfcde06_19_'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 57, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 159, 
+fillAlpha : 1.0, 
+fillBlue : 0, 
+y : 187, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 225, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a6d17c470520812_25'],
+scaleX : 1.0, 
+strokeBlue : 1, 
+fillGreen : 0, 
+shadowEnabled : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 10, 
+fillAlpha : 1.0, 
+fillBlue : 165, 
+y : 186, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 361, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9d90_9c2489_e49f0'],
+endX : 173.0, 
+endY : 198.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 284.0, 
+startY : 232.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a9c4bf2b401_50bdb6'],
+endX : 210.0, 
+endY : 201.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 183.0, 
+startY : 225.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['aa4ddb_60edc888a_3'],
+endX : 344.0, 
+endY : 199.0, 
+strokeBlue : 1, 
+headend : 0, 
+fillGreen : 1, 
+stroke : '#010101', 
+startX : 246.0, 
+startY : 233.0, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillAlpha : null, 
+fillRed : 1, 
+fillBlue : 1, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['ac6599fbef733ff_95'],
+align : 'left', 
+strokeBlue : 1, 
+fillGreen : 1, 
+fontSize : 16.0, 
+tts : false, 
+strokeGreen : 1, 
+opacity : 1.0, 
+fillRed : 1, 
+fillAlpha : 1.0, 
+fillBlue : 1, 
+y : 284, 
+strokeRed : 1, 
+strokeWidth : 1.0, 
+x : 106, 
+easing: Kinetic.Easings['Linear'], 
+duration: 1
+  })  );
+This.tweens.push (new Kinetic.Tween({
+node: id2figs['a00b4442_c6_53c323'],
+opacity : 1 , 
+easing: Kinetic.Easings['Linear'], 
+ x : 65, 
+ y : 324, 
+duration: 1
+  })  );
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+ transpages.push(   new function(){ 
+		  var This = this; 
+		  this.tweens = []; this.ttsStr = '';
+	  this.created = false;
+	  this.blockanimation = false;
+	  this.beforeTransition = 1000;
+	  this.transitionDuration = 1000;
+	  this.setup = function(){
+		      if ( This.created )
+			     return;
+  This.created = true;
+ };
+this.play  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+   if ( usetts && This.ttsStr.trim().length > 0 ){
+      var msg = new SpeechSynthesisUtterance(This.ttsStr);
+      window.speechSynthesis.speak(msg);
+   } 
+};
+this.resume  = function(){
+ This.setup ();
+ for(var i = 0; i< This.tweens.length;  i++ )
+   This.tweens[i].play();
+};
+ this.reverse  = function(){
+   for(var i = 0; i< This.tweens.length;  i++ )
+      This.tweens[i].reverse();
+ };
+ }  );
+  transpages[0].setup();  layer.batchDraw(); contentlay.batchDraw();
+	    r9player = new R9TransitionChainHandler();
+	    for(var i = 0; i< transpages.length;  i++ )
+	      r9player.add( transpages[i], transpages[i].beforeTransition, transpages[i].transitionDuration ); 
+	   r9player.start();
+ } 
+  var onMessage =  function(subject, eventDataObject, subscriberData){
+ 		if ( subject == 'r9.core.animation.resume'){
+ 			 r9player.resume(); 
+ 			return;
+ 		}
+ 		if ( subject == 'r9.core.animation.stop'){
+ 		 if ( r9player.isRunning  ){ 
+ 	    r9playbutton .moveToTop();  
+ 	    r9player.stop();   
+ 	         layer.draw();   
+ 	 } 
+ 			return;
+ 		} 
+ }
+  window.PageBus.subscribe('r9.core.animation.resume', this,  onMessage, null);
+  window.PageBus.subscribe('r9.core.animation.stop', this,  onMessage, null);
+ setupscreen(); 
+  </script> </body>  </html>
